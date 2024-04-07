@@ -26,8 +26,13 @@ set(INCLUDE_DIRS
     ${CMAKE_SOURCE_DIR}/include
 )
 
-add_executable(gkrtos
+set(SRC_FILES
     ${CMAKE_SOURCE_DIR}/src/gkrtos/gkrtos.c
+    ${CMAKE_SOURCE_DIR}/src/gkrtos/asm.S
+)
+
+add_executable(gkrtos
+    ${SRC_FILES}
 )
 
 target_link_libraries(gkrtos pico_stdlib)
