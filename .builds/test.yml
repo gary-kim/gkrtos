@@ -1,0 +1,19 @@
+arch: x86_64
+image: fedora/latest
+packages:
+  - gcc
+  - cmake
+  - 'arm-none-eabi-*'
+  - gcc-c++
+sources:
+  - "git@git.sr.ht:~gary-kim/gkrtos"
+secrets:
+  - 5de7ec36-b900-47ba-be3d-4303475f46c2
+tasks:
+- install: |
+    cd gkrtos
+    mkdir tmp
+    cd tmp
+    cmake ..
+    make -j $(nproc)
+
