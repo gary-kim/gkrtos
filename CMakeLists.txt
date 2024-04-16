@@ -22,19 +22,21 @@ project(gkrtos)
 pico_sdk_init()
 
 set(INCLUDE_DIRS
-    ${INCLUDE_DIRS}
-    ${CMAKE_SOURCE_DIR}/include
+        ${INCLUDE_DIRS}
+        ${CMAKE_SOURCE_DIR}/arch
+        ${CMAKE_SOURCE_DIR}/src
 )
 
 set(SRC_FILES
-    ${CMAKE_SOURCE_DIR}/src/gkrtos/gkrtos.c
-    ${CMAKE_SOURCE_DIR}/src/gkrtos/asm.S
+        ${CMAKE_SOURCE_DIR}/src/gkrtos/gkrtos.c
+        ${CMAKE_SOURCE_DIR}/src/gkrtos/asm.S
+        ${CMAKE_SOURCE_DIR}/src/gkrtos/concurrency/spinlock.c
 )
 
 add_executable(gkrtos
-    ${SRC_FILES}
+        ${SRC_FILES}
 )
-
+target_include_directories(gkrtos PUBLIC ${INCLUDE_DIRS})
 target_link_libraries(gkrtos pico_stdlib)
 
 pico_add_extra_outputs(gkrtos)
