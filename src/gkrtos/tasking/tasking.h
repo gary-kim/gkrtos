@@ -18,10 +18,7 @@
 
 #include <stdint-gcc.h>
 
-enum gkrtos_result {
-  GKRTOS_RESULT_SUCCESS,
-  GKRTOS_RESULT_ERROR,
-};
+#include "gkrtos/misc/misc.h"
 
 enum gkrtos_tasking_priority {
   GKRTOS_TASKING_PRIORITY_REALTIME,
@@ -40,6 +37,11 @@ struct gkrtos_tasking_task {
   // current_priority is the priority of the process at this moment. This may
   // change in scenarios such as priority inversion.
   enum gkrtos_tasking_priority current_priority;
+
+  // currently_assigned_core contains the cpuid of the core that this task is
+  // currently assigned to. This is not guaranteed to be stable throughout the
+  // lifetime of the process.
+  uint32_t currently_assigned_core;
 };
 
 // ===========================

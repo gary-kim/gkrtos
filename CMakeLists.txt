@@ -33,13 +33,15 @@ set(SRC_FILES
         ${CMAKE_SOURCE_DIR}/src/gkrtos/concurrency/spinlock.c
         ${CMAKE_SOURCE_DIR}/src/gkrtos/tasking/tasking.c
         ${CMAKE_SOURCE_DIR}/src/gkrtos/structures/list.c
+        ${CMAKE_SOURCE_DIR}/src/gkrtos/interrupts/systick.c
+        ${CMAKE_SOURCE_DIR}/src/gkrtos/hardware/rp2040.c
 )
 
 add_executable(gkrtos
         ${SRC_FILES}
 )
 target_include_directories(gkrtos PUBLIC ${INCLUDE_DIRS})
-target_link_libraries(gkrtos pico_stdlib)
+target_link_libraries(gkrtos pico_stdlib hardware_exception)
 
 pico_add_extra_outputs(gkrtos)
 

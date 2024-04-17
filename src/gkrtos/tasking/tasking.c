@@ -27,6 +27,7 @@ struct gkrtos_tasking_task* gkrtos_tasking_task_new(
   task->pid = current_max_pid++;
   task->priority = priority;
   task->current_priority = task->priority;
+  task->currently_assigned_core = 0;
   return task;
 }
 
