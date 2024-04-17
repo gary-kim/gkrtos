@@ -12,7 +12,6 @@ enum gkrtos_spinlock_status {
   GKRTOS_SPINLOCK_STATUS_UNAVAILABLE
 };
 
-
 // ===========================
 // === OS Public Functions ===
 // ===========================
@@ -20,4 +19,3 @@ enum gkrtos_spinlock_status {
 int gkrtos_get_spinlock(int lock_id);
 
 #endif
-

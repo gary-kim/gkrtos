@@ -1,9 +1,8 @@
 #include "spinlock.h"
 
-#include "rp2040/rp2040_defs.h"
-
 #include "hardware/sync.h"
 #include "pico/stdlib.h"
+#include "rp2040/rp2040_defs.h"
 
 uint32_t saved_interrupts;
 uint32_t os1_interrupts;
