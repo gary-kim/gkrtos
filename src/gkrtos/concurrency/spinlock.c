@@ -30,28 +30,28 @@ enum gkrtos_spinlock_status gkrtos_spinlock_release(
 
 // Gets the OS spinlock 1 of the architecture
 // (e.g. SPINLOCK14 on RP2040).
-enum gkrtos_spinlock_status _gkrtos_get_os_spinlock_1() {
+enum gkrtos_spinlock_status gkrtos_get_os_spinlock_1() {
   os1_interrupts = save_and_disable_interrupts();
   spin_lock_claim(GKRTOS_SPINLOCK_ID_OS1);
 }
 
 // Gets the OS spinlock 2 of the architecture
 // (e.g. SPINLOCK15 on RP2040).
-enum gkrtos_spinlock_status _gkrtos_get_os_spinlock_2() {
+enum gkrtos_spinlock_status gkrtos_get_os_spinlock_2() {
   os2_interrupts = save_and_disable_interrupts();
   spin_lock_claim(GKRTOS_SPINLOCK_ID_OS2);
 }
 
 // Gets the OS spinlock 1 of the architecture
 // (e.g. SPINLOCK14 on RP2040).
-enum gkrtos_spinlock_status _gkrtos_release_os_spinlock_1() {
+enum gkrtos_spinlock_status gkrtos_release_os_spinlock_1() {
   spin_lock_unclaim(GKRTOS_SPINLOCK_ID_OS2);
   restore_interrupts(os1_interrupts);
 }
 
 // Gets the OS spinlock 2 of the architecture
 // (e.g. SPINLOCK15 on RP2040).
-enum gkrtos_spinlock_status _gkrtos_release_os_spinlock_2() {
+enum gkrtos_spinlock_status gkrtos_release_os_spinlock_2() {
   spin_lock_unclaim(GKRTOS_SPINLOCK_ID_OS2);
   restore_interrupts(os2_interrupts);
 }

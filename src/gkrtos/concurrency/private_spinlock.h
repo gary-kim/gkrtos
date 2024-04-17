@@ -1,0 +1,18 @@
+#ifndef GKRTOS_CONCURRENCY_PRIVATE_SPINLOCK_H
+#define GKRTOS_CONCURRENCY_PRIVATE_SPINLOCK_H
+
+#include "spinlock.h"
+
+#define gkrtos_get_os_spinlock_atomic gkrtos_get_os_spinlock_1
+#define gkrtos_get_os_spinlock_data_structures gkrtos_get_os_spinlock_2
+
+#define gkrtos_release_os_spinlock_atomic gkrtos_release_os_spinlock_1
+#define gkrtos_release_os_spinlock_data_structures gkrtos_release_os_spinlock_2
+
+enum gkrtos_spinlock_status gkrtos_get_os_spinlock_1();
+enum gkrtos_spinlock_status gkrtos_get_os_spinlock_2();
+
+enum gkrtos_spinlock_status gkrtos_release_os_spinlock_1();
+enum gkrtos_spinlock_status gkrtos_release_os_spinlock_2();
+
+#endif

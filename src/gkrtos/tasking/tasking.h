@@ -1,6 +1,13 @@
 #ifndef GKRTOS_TASKING_H
 #define GKRTOS_TASKING_H
 
+#include <stdint-gcc.h>
+
+enum gkrtos_result {
+  GKRTOS_RESULT_SUCCESS,
+  GKRTOS_RESULT_ERROR,
+};
+
 enum gkrtos_tasking_priority {
   GKRTOS_TASKING_PRIORITY_REALTIME,
   GKRTOS_TASKING_PRIORITY_KERNEL,

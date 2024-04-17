@@ -5,6 +5,7 @@ packages:
   - cmake
   - 'arm-none-eabi-*'
   - gcc-c++
+  - clang-tools-extra
 sources:
   - "git@git.sr.ht:~gary-kim/gkrtos"
 secrets:
