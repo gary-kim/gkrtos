@@ -36,12 +36,60 @@ struct gkrtos_list* gkrtos_list_append(struct gkrtos_list* list,
     list->length = 1;
     return list;
   }
-
+  // Append item to list
   list->tail->next = item;
   item->prev = list->tail;
   item->next = list->head;
   list->tail = item;
   list->length++;
+  return list;
+}
+
+struct gkrtos_list* gkrtos_list_prepend(struct gkrtos_list* list,
+                                        struct gkrtos_list_item* item) {
+  if (list->length == 0) {
+    // First item in the list
+    list->head = item;
+    list->tail = item;
+    item->next = item;
+    item->prev = item;
+    list->length = 1;
+    return list;
+  }
+  // Prepend the new item to the list
+  list->head->prev = item;
+  item->next = list->head;
+  item->prev = list->tail;
+  list->head = item;
+  list->length++;
+
+  return list;
+}
+
+struct gkrtos_list* gkrtos_list_remove(struct gkrtos_list* list,
+                                       struct gkrtos_list_item* item) {
+  if (list->length == 0) {
+    return list;
+  }
+
+  if (list->head == item) {
+    list->head = item->next;
+    list->head->prev = item->prev;
+    goto SUCCESS;
+  }
+  if (list->tail == item) {
+    list->tail = item->prev;
+    list->tail->next = item->next;
+    goto SUCCESS;
+  }
+
+  // Standard remove
+  item->prev->next = item->next;
+  item->next->prev = item->prev;
+
+SUCCESS:
+  list->length--;
+  free(item);
   return list;
 }
 
