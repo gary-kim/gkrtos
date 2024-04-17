@@ -28,13 +28,14 @@ set(INCLUDE_DIRS
 )
 
 set(SRC_FILES
-        ${CMAKE_SOURCE_DIR}/src/gkrtos/gkrtos.c
         ${CMAKE_SOURCE_DIR}/src/gkrtos/asm.S
         ${CMAKE_SOURCE_DIR}/src/gkrtos/concurrency/spinlock.c
-        ${CMAKE_SOURCE_DIR}/src/gkrtos/tasking/tasking.c
-        ${CMAKE_SOURCE_DIR}/src/gkrtos/structures/list.c
-        ${CMAKE_SOURCE_DIR}/src/gkrtos/interrupts/systick.c
+        ${CMAKE_SOURCE_DIR}/src/gkrtos/gkrtos.c
         ${CMAKE_SOURCE_DIR}/src/gkrtos/hardware/rp2040.c
+        ${CMAKE_SOURCE_DIR}/src/gkrtos/interrupts/svcall.c
+        ${CMAKE_SOURCE_DIR}/src/gkrtos/interrupts/systick.c
+        ${CMAKE_SOURCE_DIR}/src/gkrtos/structures/list.c
+        ${CMAKE_SOURCE_DIR}/src/gkrtos/tasking/tasking.c
 )
 
 add_executable(gkrtos

@@ -13,11 +13,13 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef GKRTOS_INTERRUPTS_SYSTICK_H
-#define GKRTOS_INTERRUPTS_SYSTICK_H
+#include "svcall.h"
 
-void systick_handler();
+#include "hardware/exception.h"
 
-enum gkrtos_result init_systick_handler();
+void svcall_handler() {}
 
-#endif
+enum gkrtos_result init_svcall_handler() {
+  exception_set_exclusive_handler(SVCALL_EXCEPTION, svcall_handler);
+  return GKRTOS_RESULT_SUCCESS;
+}
