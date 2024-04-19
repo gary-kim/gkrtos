@@ -64,5 +64,13 @@ gkrtos_isr_svcall:
     CONTEXT_RESTORE r0
     pop {pc}
 
+    .thumb_func
+    .type gkrtos_trigger_svcall, %function
+    .global gkrtos_trigger_svcall
+gkrtos_trigger_svcall:
+    push {lr}
+    svc #0
+    pop {pc}
+
 // vim:ft=nasm
 

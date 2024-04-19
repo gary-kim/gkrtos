@@ -15,6 +15,12 @@
 
 #include <stdint-gcc.h>
 
+typedef void* gkrtos_stackptr_t;
+
+// =========================
+// == OS Public Functions ==
+// =========================
+
 uint32_t gkrtos_get_cpuid();
 
 uint32_t gkrtos_get_cpu_frequency();

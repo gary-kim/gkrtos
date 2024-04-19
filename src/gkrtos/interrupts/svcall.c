@@ -15,9 +15,12 @@
 
 #include "svcall.h"
 
+#include "gkrtos/hardware/rp2040.h"
+#include "gkrtos/syscalls/syscalls.h"
 #include "hardware/exception.h"
 
-void gkrtos_svcall_handler() {}
+void gkrtos_svcall_handler(gkrtos_stackptr_t stackptr, enum gkrtos_syscall,
+                           void* args) {}
 
 enum gkrtos_result init_svcall_handler() {
   exception_set_exclusive_handler(SVCALL_EXCEPTION, gkrtos_isr_svcall);

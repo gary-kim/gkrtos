@@ -13,17 +13,24 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef GKRTOS_INTERRUPTS_SVCALL_H
-#define GKRTOS_INTERRUPTS_SVCALL_H
+#include "syscalls.h"
 
-#include "gkrtos/hardware/rp2040.h"
 #include "gkrtos/misc/misc.h"
-#include "gkrtos/syscalls/syscalls.h"
 
-void gkrtos_isr_svcall();
-void gkrtos_svcall_handler(gkrtos_stackptr_t stackptr, enum gkrtos_syscall,
-                           void* args);
+void gkrtos_tigger_svcall(enum gkrtos_syscall, void* args);
 
-enum gkrtos_result init_svcall_handler();
+void gkrtos_syscall(enum gkrtos_syscall syscall, void* args) {
+  gkrtos_trigger_svcall(syscall, void* args);
+}
 
-#endif
+void gkrtos_syscall_suicide() { gkrtos_syscall(GKRTOS_SYSCALL_SUICIDE, NULL); }
+
+void gkrtos_syscall_kill(gkrtos_pid_t pid) {
+  gkrtos_syscall(GKRTOS_SYSCALL_KILL, &pid);
+}
+
+void gkrtos_syscall_yield() { gkrtos_syscall(GKRTOS_SYSCALL_YIELD, NULL); }
+
+void gkrtos_syscall_sleep_for(uint32_t milliseconds) {
+  gkrtos_syscall(GKRTOS_SYSCALL_SLEEP_FOR, &milliseconds);
+}

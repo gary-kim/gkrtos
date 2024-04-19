@@ -27,8 +27,10 @@ enum gkrtos_tasking_priority {
   GKRTOS_TASKING_PRIORITY_USER,
 };
 
+typedef uint32_t gkrtos_pid_t;
+
 struct gkrtos_tasking_task {
-  unsigned int pid;
+  gkrtos_pid_t pid;
 
   // priority is the real priority of the task. This should not change
   // throughout the lifetime of the process.
