@@ -16,9 +16,11 @@
 #include "syscalls_impl.h"
 
 #include "gkrtos/misc/misc.h"
+#include "gkrtos/tasking/tasking.h"
 #include "syscalls.h"
 
-void gkrtos_internal_syscall(enum gkrtos_syscall syscall, void* args) {
+void gkrtos_internal_syscall(struct gkrtos_tasking_task* task,
+                             enum gkrtos_syscall syscall, void* args) {
   // Dispatch to correct function
   // TODO: Switch to function pointer array for faster operation
   switch (syscall) {
@@ -36,14 +38,12 @@ void gkrtos_internal_syscall(enum gkrtos_syscall syscall, void* args) {
   }
 }
 
-void gkrtos_internal_syscall_suicide() {
-}
+void gkrtos_internal_syscall_suicide(struct gkrtos_tasking_task* task) {}
 
-void gkrtos_internal_syscall_kill(gkrtos_pid_t* pid) {
-}
+void gkrtos_internal_syscall_kill(struct gkrtos_tasking_task* task,
+                                  gkrtos_pid_t* pid) {}
 
-void gkrtos_internal_syscall_yield() {
-}
+void gkrtos_internal_syscall_yield(struct gkrtos_tasking_task* task) {}
 
-void gkrtos_internal_syscall_sleep_for(uint32_t* milliseconds) {
-}
+void gkrtos_internal_syscall_sleep_for(struct gkrtos_tasking_task* task,
+                                       uint32_t* milliseconds) {}

@@ -1,0 +1,6 @@
+#ifndef GKRTOS_CONFIG_H
+#define GKRTOS_CONFIG_H
+
+#define GKRTOS_CONFIG_MAX_TASKS 128
+
+#endif

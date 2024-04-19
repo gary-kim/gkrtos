@@ -18,6 +18,7 @@
 
 #include <stdint-gcc.h>
 
+#include "gkrtos/config.h"
 #include "gkrtos/misc/misc.h"
 
 enum gkrtos_tasking_priority {
@@ -45,6 +46,8 @@ struct gkrtos_tasking_task {
   // lifetime of the process.
   uint32_t currently_assigned_core;
 };
+
+extern struct gkrtos_tasking_task gkrtos_task_list[GKRTOS_CONFIG_MAX_TASKS];
 
 // ===========================
 // === OS Public Functions ===
