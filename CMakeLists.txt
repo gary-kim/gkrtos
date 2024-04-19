@@ -19,6 +19,8 @@ cmake_minimum_required(VERSION 3.20)
 include(arch/rp2040/pico-sdk/pico_sdk_init.cmake)
 project(gkrtos)
 
+set(CMAKE_C_STANDARD 17)
+
 pico_sdk_init()
 
 set(INCLUDE_DIRS
