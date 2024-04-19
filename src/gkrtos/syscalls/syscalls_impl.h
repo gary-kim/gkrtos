@@ -15,14 +15,14 @@
 
 // This file contains all the implementations for system calls.
 
-#ifndef GKRTOS_INTERRUPTS_SYSCALLS_H
-#define GKRTOS_INTERRUPTS_SYSCALLS_H
+#ifndef GKRTOS_INTERRUPTS_SYSCALLS_IMPL_H
+#define GKRTOS_INTERRUPTS_SYSCALLS_IMPL_H
 
 #include <stdint-gcc.h>
 
 #include "gkrtos/misc/misc.h"
+#include "gkrtos/syscalls/syscalls.h"
 #include "gkrtos/tasking/tasking.h"
-#include "syscalls_impl.h"
 
 void gkrtos_internal_syscall(struct gkrtos_tasking_task* task,
                              enum gkrtos_syscall syscall, void* args);
@@ -32,5 +32,8 @@ void gkrtos_internal_syscall_kill(struct gkrtos_tasking_task* task,
 void gkrtos_internal_syscall_yield(struct gkrtos_tasking_task* task);
 void gkrtos_internal_syscall_sleep_for(struct gkrtos_tasking_task* task,
                                        uint32_t* milliseconds);
+void gkrtos_internal_syscall_create_task(
+    struct gkrtos_tasking_task* task,
+    struct gkrtos_syscall_create_task_args* args);
 
 #endif

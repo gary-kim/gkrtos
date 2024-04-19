@@ -25,16 +25,20 @@ void gkrtos_internal_syscall(struct gkrtos_tasking_task* task,
   // TODO: Switch to function pointer array for faster operation
   switch (syscall) {
     case GKRTOS_SYSCALL_SUICIDE:
-      gkrtos_internal_syscall_kill();
+      gkrtos_internal_syscall_suicide(task);
       break;
     case GKRTOS_SYSCALL_YIELD:
-      gkrtos_internal_syscall_yield(args) : break;
+      gkrtos_internal_syscall_yield(task);
+      break;
     case GKRTOS_SYSCALL_KILL:
-      gkrtos_internal_syscall_kill(args);
+      gkrtos_internal_syscall_kill(task, args);
       break;
     case GKRTOS_SYSCALL_SLEEP_FOR:
-      gkrtos_internal_syscall_sleep_for(args);
+      gkrtos_internal_syscall_sleep_for(task, args);
       break;
+    case GKRTOS_SYSCALL_CREATE_TASK:
+      gkrtos_internal_syscall_create_task(
+          task, (struct gkrtos_syscall_create_task_args*)args);
   }
 }
 
@@ -47,3 +51,6 @@ void gkrtos_internal_syscall_yield(struct gkrtos_tasking_task* task) {}
 
 void gkrtos_internal_syscall_sleep_for(struct gkrtos_tasking_task* task,
                                        uint32_t* milliseconds) {}
+void gkrtos_internal_syscall_create_task(
+    struct gkrtos_tasking_task* task,
+    struct gkrtos_syscall_create_task_args* args) {}

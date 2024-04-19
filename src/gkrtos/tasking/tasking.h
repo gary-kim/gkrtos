@@ -29,6 +29,7 @@ enum gkrtos_tasking_priority {
 };
 
 typedef uint32_t gkrtos_pid_t;
+typedef void (*gkrtos_tasking_function_t)();
 
 struct gkrtos_tasking_task {
   gkrtos_pid_t pid;
@@ -45,6 +46,17 @@ struct gkrtos_tasking_task {
   // currently assigned to. This is not guaranteed to be stable throughout the
   // lifetime of the process.
   uint32_t currently_assigned_core;
+
+  // function stores the actual function to run. For most standard tasks, this
+  // is only used once during initial setup. This is more useful for specific
+  // frequency tasks that will run the task at a specific frequency (which is
+  // mostly a helper method).
+  gkrtos_tasking_function_t function;
+
+  // run_frequency stores the desired frequency in Hz at which this task should
+  // be run. This will usually be set to zero, meaning that the expectation is
+  // that the task function will never return.
+  uint32_t run_frequency;
 };
 
 extern struct gkrtos_tasking_task gkrtos_task_list[GKRTOS_CONFIG_MAX_TASKS];

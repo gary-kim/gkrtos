@@ -29,6 +29,13 @@ enum gkrtos_syscall {
   GKRTOS_SYSCALL_YIELD = 1,
   GKRTOS_SYSCALL_SLEEP_FOR = 2,
   GKRTOS_SYSCALL_SUICIDE = 3,
+  GKRTOS_SYSCALL_CREATE_TASK = 4,
+};
+
+struct gkrtos_syscall_create_task_args {
+  enum gkrtos_tasking_priority priority;
+  gkrtos_tasking_function_t function;
+  uint32_t run_frequency;
 };
 
 void gkrtos_syscall(enum gkrtos_syscall syscall, void* args);
@@ -36,5 +43,6 @@ void gkrtos_syscall_suicide();
 void gkrtos_syscall_kill(gkrtos_pid_t pid);
 void gkrtos_syscall_yield();
 void gkrtos_syscall_sleep_for(uint32_t milliseconds);
+void gkrtos_syscall_create_task(struct gkrtos_syscall_create_task_args* args);
 
 #endif

@@ -15,12 +15,15 @@
 
 #include "syscalls.h"
 
+#include <stddef.h>
+
 #include "gkrtos/misc/misc.h"
 
-void gkrtos_tigger_svcall(enum gkrtos_syscall, void* args);
+// Implemented in src/gkrtos/asm.S
+void gkrtos_trigger_svcall(enum gkrtos_syscall, void* args);
 
 void gkrtos_syscall(enum gkrtos_syscall syscall, void* args) {
-  gkrtos_trigger_svcall(syscall, void* args);
+  gkrtos_trigger_svcall(syscall, args);
 }
 
 void gkrtos_syscall_suicide() { gkrtos_syscall(GKRTOS_SYSCALL_SUICIDE, NULL); }
@@ -33,4 +36,8 @@ void gkrtos_syscall_yield() { gkrtos_syscall(GKRTOS_SYSCALL_YIELD, NULL); }
 
 void gkrtos_syscall_sleep_for(uint32_t milliseconds) {
   gkrtos_syscall(GKRTOS_SYSCALL_SLEEP_FOR, &milliseconds);
+}
+
+void gkrtos_syscall_create_task(struct gkrtos_syscall_create_task_args* args) {
+  gkrtos_syscall(GKRTOS_SYSCALL_CREATE_TASK, args);
 }
