@@ -20,10 +20,9 @@
 
 #include <stdint-gcc.h>
 
-#include "syscalls_impl.h"
-
 #include "gkrtos/misc/misc.h"
 #include "gkrtos/tasking/tasking.h"
+#include "syscalls_impl.h"
 
 void gkrtos_internal_syscall(enum gkrtos_syscall syscall, void* args);
 void gkrtos_internal_syscall_suicide();
