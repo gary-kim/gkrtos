@@ -20,4 +20,8 @@ tasks:
   - format: |
       cd gkrtos
       ./scripts/clang-format-check.sh
+triggers:
+  - action: email
+    condition: always
+    to: "Gary Kim <gary.kim@cooper.edu>"
 
