@@ -37,17 +37,13 @@ void gkrtos_internal_syscall(enum gkrtos_syscall syscall, void* args) {
 }
 
 void gkrtos_internal_syscall_suicide() {
-  gkrtos_syscall(GKRTOS_SYSCALL_SUICIDE, NULL);
 }
 
-void gkrtos_internal_syscall_kill(gkrtos_pid_t pid) {
-  gkrtos_syscall(GKRTOS_SYSCALL_KILL, &pid);
+void gkrtos_internal_syscall_kill(gkrtos_pid_t* pid) {
 }
 
 void gkrtos_internal_syscall_yield() {
-  gkrtos_syscall(GKRTOS_SYSCALL_YIELD, NULL);
 }
 
-void gkrtos_internal_syscall_sleep_for(uint32_t milliseconds) {
-  gkrtos_syscall(GKRTOS_SYSCALL_SLEEP_FOR, &milliseconds);
+void gkrtos_internal_syscall_sleep_for(uint32_t* milliseconds) {
 }
