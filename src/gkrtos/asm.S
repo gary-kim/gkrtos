@@ -42,5 +42,27 @@
     msr psp, \rS
     .endm
 
+    .thumb_func
+    .type gkrtos_isr_systick, %function
+    .global gkrtos_isr_systick
+gkrtos_isr_systick:
+    push {lr}
+    CONTEXT_SAVE r0
+    bl gkrtos_systick_handler
+    CONTEXT_RESTORE r0
+    pop {pc}
+
+    .thumb_func
+    .type gkrtos_isr_svcall, %function
+    .global gkrtos_isr_svcall
+gkrtos_isr_svcall:
+    push {lr}
+    CONTEXT_SAVE r0
+    ldr r1, [r0, #32]	/* 1st argument (r0 on psp) */
+	ldr r2, [r0, #36]	/* 2nd argument (r1 on psp) */
+    bl gkrtos_syvcall_handler
+    CONTEXT_RESTORE r0
+    pop {pc}
+
 // vim:ft=nasm
 

@@ -17,9 +17,9 @@
 
 #include "hardware/exception.h"
 
-void svcall_handler() {}
+void gkrtos_svcall_handler() {}
 
 enum gkrtos_result init_svcall_handler() {
-  exception_set_exclusive_handler(SVCALL_EXCEPTION, svcall_handler);
+  exception_set_exclusive_handler(SVCALL_EXCEPTION, gkrtos_isr_svcall);
   return GKRTOS_RESULT_SUCCESS;
 }

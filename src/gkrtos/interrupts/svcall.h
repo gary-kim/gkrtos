@@ -18,7 +18,8 @@
 
 #include "gkrtos/misc/misc.h"
 
-void svcall_handler();
+void gkrtos_isr_svcall();
+void gkrtos_svcall_handler();
 
 enum gkrtos_result init_svcall_handler();
 
