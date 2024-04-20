@@ -41,6 +41,7 @@ struct gkrtos_tasking_task* gkrtos_tasking_task_new(
   task->currently_assigned_core = 0;
   task->function = NULL;
   task->run_frequency = 0;
+  task->accounting.run_ticks = 0;
   return task;
 }
 

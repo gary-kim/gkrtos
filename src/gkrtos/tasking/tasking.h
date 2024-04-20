@@ -57,6 +57,10 @@ struct gkrtos_tasking_task {
   // be run. This will usually be set to zero, meaning that the expectation is
   // that the task function will never return.
   uint32_t run_frequency;
+
+  struct {
+    uint64_t run_ticks;
+  } accounting;
 };
 
 extern struct gkrtos_tasking_task gkrtos_task_list[GKRTOS_CONFIG_MAX_TASKS];
