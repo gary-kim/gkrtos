@@ -17,6 +17,7 @@
 
 #include "gkrtos/misc/misc.h"
 #include "gkrtos/tasking/tasking.h"
+#include "pico/types.h"
 #include "syscalls.h"
 
 void gkrtos_internal_syscall(struct gkrtos_tasking_task* task,
@@ -31,10 +32,10 @@ void gkrtos_internal_syscall(struct gkrtos_tasking_task* task,
       gkrtos_internal_syscall_yield(task);
       break;
     case GKRTOS_SYSCALL_KILL:
-      gkrtos_internal_syscall_kill(task, args);
+      gkrtos_internal_syscall_kill(task, (gkrtos_pid_t*)args);
       break;
-    case GKRTOS_SYSCALL_SLEEP_FOR:
-      gkrtos_internal_syscall_sleep_for(task, args);
+    case GKRTOS_SYSCALL_SLEEP_UNTIL:
+      gkrtos_internal_syscall_sleep_until(task, (absolute_time_t*)args);
       break;
     case GKRTOS_SYSCALL_CREATE_TASK:
       gkrtos_internal_syscall_create_task(
@@ -49,8 +50,8 @@ void gkrtos_internal_syscall_kill(struct gkrtos_tasking_task* task,
 
 void gkrtos_internal_syscall_yield(struct gkrtos_tasking_task* task) {}
 
-void gkrtos_internal_syscall_sleep_for(struct gkrtos_tasking_task* task,
-                                       uint32_t* milliseconds) {}
+void gkrtos_internal_syscall_sleep_until(struct gkrtos_tasking_task* task,
+                                         absolute_time_t* milliseconds) {}
 void gkrtos_internal_syscall_create_task(
     struct gkrtos_tasking_task* task,
     struct gkrtos_syscall_create_task_args* args) {}

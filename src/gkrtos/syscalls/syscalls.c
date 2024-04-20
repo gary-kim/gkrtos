@@ -34,8 +34,8 @@ void gkrtos_syscall_kill(gkrtos_pid_t pid) {
 
 void gkrtos_syscall_yield() { gkrtos_syscall(GKRTOS_SYSCALL_YIELD, NULL); }
 
-void gkrtos_syscall_sleep_for(uint32_t milliseconds) {
-  gkrtos_syscall(GKRTOS_SYSCALL_SLEEP_FOR, &milliseconds);
+void gkrtos_syscall_sleep_until(absolute_time_t milliseconds) {
+  gkrtos_syscall(GKRTOS_SYSCALL_SLEEP_UNTIL, &milliseconds);
 }
 
 void gkrtos_syscall_create_task(struct gkrtos_syscall_create_task_args* args) {

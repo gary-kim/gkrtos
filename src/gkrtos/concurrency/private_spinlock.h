@@ -16,6 +16,8 @@
 #ifndef GKRTOS_CONCURRENCY_PRIVATE_SPINLOCK_H
 #define GKRTOS_CONCURRENCY_PRIVATE_SPINLOCK_H
 
+#include "gkrtos/misc/misc.h"
+#include "pico/sync.h"
 #include "spinlock.h"
 
 #define gkrtos_get_os_spinlock_atomic gkrtos_get_os_spinlock_1
@@ -24,10 +26,21 @@
 #define gkrtos_release_os_spinlock_atomic gkrtos_release_os_spinlock_1
 #define gkrtos_release_os_spinlock_data_structures gkrtos_release_os_spinlock_2
 
-enum gkrtos_spinlock_status gkrtos_get_os_spinlock_1();
-enum gkrtos_spinlock_status gkrtos_get_os_spinlock_2();
+extern critical_section_t critical_section_os1;
+extern critical_section_t critical_section_os_data_structures;
 
-enum gkrtos_spinlock_status gkrtos_release_os_spinlock_1();
-enum gkrtos_spinlock_status gkrtos_release_os_spinlock_2();
+enum gkrtos_result gkrtos_critical_section_init();
+
+static inline enum gkrtos_result
+gkrtos_critical_section_data_structures_enter_blocking() {
+  critical_section_enter_blocking(&critical_section_os_data_structures);
+  return GKRTOS_RESULT_SUCCESS;
+}
+
+static inline enum gkrtos_result
+gkrtos_critical_section_data_structures_exit() {
+  critical_section_exit(&critical_section_os_data_structures);
+  return GKRTOS_RESULT_SUCCESS;
+}
 
 #endif

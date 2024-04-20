@@ -31,6 +31,4 @@ enum gkrtos_spinlock_status {
 // === OS Public Functions ===
 // ===========================
 
-int gkrtos_get_spinlock(int lock_id);
-
 #endif

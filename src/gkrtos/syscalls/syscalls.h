@@ -20,6 +20,7 @@
 
 #include "gkrtos/misc/misc.h"
 #include "gkrtos/tasking/tasking.h"
+#include "pico/types.h"
 
 // enum gkrtos_sycall is effectively the syscall number table. For readability,
 // easier non-C implementation support, and stability, all enum values will be
@@ -27,7 +28,7 @@
 enum gkrtos_syscall {
   GKRTOS_SYSCALL_KILL = 0,
   GKRTOS_SYSCALL_YIELD = 1,
-  GKRTOS_SYSCALL_SLEEP_FOR = 2,
+  GKRTOS_SYSCALL_SLEEP_UNTIL = 2,
   GKRTOS_SYSCALL_SUICIDE = 3,
   GKRTOS_SYSCALL_CREATE_TASK = 4,
 };
@@ -42,7 +43,7 @@ void gkrtos_syscall(enum gkrtos_syscall syscall, void* args);
 void gkrtos_syscall_suicide();
 void gkrtos_syscall_kill(gkrtos_pid_t pid);
 void gkrtos_syscall_yield();
-void gkrtos_syscall_sleep_for(uint32_t milliseconds);
+void gkrtos_syscall_sleep_until(absolute_time_t milliseconds);
 void gkrtos_syscall_create_task(struct gkrtos_syscall_create_task_args* args);
 
 #endif

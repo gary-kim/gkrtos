@@ -28,11 +28,11 @@ struct gkrtos_tasking_task* gkrtos_tasking_task_new(
     enum gkrtos_tasking_priority priority) {
   static gkrtos_pid_t current_max_pid = 0;
 
-  gkrtos_get_os_spinlock_data_structures();
+  gkrtos_critical_section_data_structures_enter_blocking();
   // BEGIN CRITICAL REGION
   gkrtos_pid_t process_pid = current_max_pid++;
   // END CRITICAL REGION
-  gkrtos_release_os_spinlock_data_structures();
+  gkrtos_critical_section_data_structures_exit();
 
   struct gkrtos_tasking_task* task = &gkrtos_task_list[process_pid];
   task->pid = process_pid;
@@ -50,9 +50,9 @@ enum gkrtos_tasking_priority gkrtos_tasking_priority_user(uint8_t priority) {
 
 // Requires OS Spinlock
 enum gkrtos_result gkrtos_tasking_queue_task(struct gkrtos_tasking_task* task) {
-  gkrtos_get_os_spinlock_data_structures();
+  gkrtos_critical_section_data_structures_enter_blocking();
   // BEGIN CRITICAL REGION
 
   // END CRITICAL REGION
-  gkrtos_release_os_spinlock_data_structures();
+  gkrtos_critical_section_data_structures_exit();
 }
