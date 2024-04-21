@@ -17,11 +17,9 @@
 
 #include "gkrtos/misc/misc.h"
 #include "hardware/exception.h"
-#include "hardware/irq.h"
-#include "hardware/resets.h"
+#include "hardware/regs/m0plus.h"
 #include "hardware/structs/systick.h"
-#include "hardware/watchdog.h"
-#include "pico/stdlib.h"
+#include "rp2040/rp2040_defs.h"
 
 void gkrtos_systick_handler() {
   // SysTick handling
@@ -37,5 +35,10 @@ enum gkrtos_result init_systick_handler() {
   );
   // TODO: Determine a more appropriate value for this.
   systick_hw->rvr = 0x00FFFFFF;
+
+  // Set system handler priority
+  gkrtos_set_register(M0PLUS_SHPR3_OFFSET, M0PLUS_SHPR3_PRI_15_BITS,
+                      M0PLUS_SHPR3_PRI_15_LSB, GKRTOS_SYSTICK_PRIORITY);
+
   return GKRTOS_RESULT_SUCCESS;
 }

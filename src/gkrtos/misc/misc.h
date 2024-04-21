@@ -16,9 +16,22 @@
 #ifndef GKRTOS_MISC_MISC_H
 #define GKRTOS_MISC_MISC_H
 
+#include "hardware/address_mapped.h"
+#include "hardware/regs/m0plus.h"
+
 enum gkrtos_result {
   GKRTOS_RESULT_SUCCESS,
   GKRTOS_RESULT_ERROR,
 };
+
+static void inline gkrtos_set_register(io_rw_32 offset, io_rw_32 bits,
+                                       io_rw_32 starting_bits_offset,
+                                       io_rw_32 value) {
+  io_rw_32* reg = (PPB_BASE + offset);
+  io_rw_32 reg_val = *reg;
+  reg_val = reg_val & ~bits;
+  reg_val = reg_val | (value << starting_bits_offset);
+  *reg = reg_val;
+}
 
 #endif
