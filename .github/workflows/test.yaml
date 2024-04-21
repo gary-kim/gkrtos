@@ -1,0 +1,28 @@
+name: test
+on:
+  push:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container:
+      image: docker.io/fedora:latest
+      options: --user root
+    steps:
+      - name: install dependencies
+        run: dnf install -y git gcc gcc-c++ clang-tools-extra cmake 'arm-none-eabi-*'
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: true
+      - name: install
+        run: |
+          mkdir tmp
+          cd tmp
+          cmake ..
+          make -j $(nproc)
+      - name: test
+        run: |
+          ./scripts/clang-format-check.sh
+
