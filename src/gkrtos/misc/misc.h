@@ -27,7 +27,7 @@ enum gkrtos_result {
 static void inline gkrtos_set_register(io_rw_32 offset, io_rw_32 bits,
                                        io_rw_32 starting_bits_offset,
                                        io_rw_32 value) {
-  io_rw_32* reg = (PPB_BASE + offset);
+  io_rw_32* reg = (io_rw_32*)(PPB_BASE + offset);
   io_rw_32 reg_val = *reg;
   reg_val = reg_val & ~bits;
   reg_val = reg_val | (value << starting_bits_offset);
