@@ -13,20 +13,12 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef GKRTOS_RP2040_DEFS_H
-#define GKRTOS_RP2040_DEFS_H
-#include "pico/stdlib.h"
+#ifndef GKRTOS_INTERRUPTS_PENDSV_H
+#define GKRTOS_INTERRUPTS_PENDSV_H
 
-#define GKRTOS_SPINLOCK_ID_MINIMUM 16
-#define GKRTOS_SPINLOCK_ID_MAXIMUM 31
+#include "gkrtos/misc/misc.h"
+#include "gkrtos/tasking/tasking.h"
 
-#define GKRTOS_SPINLOCK_ID_OS1 PICO_SPINLOCK_ID_OS1
-#define GKRTOS_SPINLOCK_ID_OS2 PICO_SPINLOCK_ID_OS2
-
-#define GKRTOS_SYSTICK_PRIORITY 1
-#define GKRTOS_SVCALL_PRIORITY 1
-#define GKRTOS_PENDSV_PRIORITY 0
-
-#define GKRTOS_ARCH_NUM_CORES 2
-
+gkrtos_stackptr_t gkrtos_pendsv_handler_c(gkrtos_stackptr_t stackptr);
+void gkrtos_pendsv_context_switch();
 #endif

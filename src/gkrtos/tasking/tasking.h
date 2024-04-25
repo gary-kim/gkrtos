@@ -19,7 +19,9 @@
 #include <stdint-gcc.h>
 
 #include "gkrtos/config.h"
+#include "gkrtos/hardware/rp2040.h"
 #include "gkrtos/misc/misc.h"
+#include "rp2040/rp2040_defs.h"
 
 enum gkrtos_tasking_priority {
   GKRTOS_TASKING_PRIORITY_REALTIME,
@@ -58,12 +60,23 @@ struct gkrtos_tasking_task {
   // that the task function will never return.
   uint32_t run_frequency;
 
+  // stackptr keeps track of the stack pointer whenever a context switch away
+  // from this task occurs.
+  gkrtos_stackptr_t stackptr;
+
   struct {
     uint64_t run_ticks;
   } accounting;
 };
 
+struct gkrtos_tasking_core {
+  gkrtos_pid_t currently_running_pid;
+};
+
 extern struct gkrtos_tasking_task gkrtos_task_list[GKRTOS_CONFIG_MAX_TASKS];
+extern struct gkrtos_tasking_core gkrtos_tasking_cores[GKRTOS_ARCH_NUM_CORES];
+
+gkrtos_stackptr_t gkrtos_internal_context_switch();
 
 // ===========================
 // === OS Public Functions ===

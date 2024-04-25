@@ -27,7 +27,7 @@ enum gkrtos_result init_svcall_handler() {
   exception_set_exclusive_handler(SVCALL_EXCEPTION, gkrtos_isr_svcall);
 
   // Set system handler priority
-  gkrtos_set_register(M0PLUS_SHPR3_OFFSET, M0PLUS_SHPR3_PRI_14_BITS,
-                      M0PLUS_SHPR3_PRI_14_LSB, GKRTOS_SVCALL_PRIORITY);
+  gkrtos_set_register(M0PLUS_SHPR2_OFFSET, M0PLUS_SHPR2_PRI_11_BITS,
+                      M0PLUS_SHPR2_PRI_11_LSB, GKRTOS_SVCALL_PRIORITY);
   return GKRTOS_RESULT_SUCCESS;
 }

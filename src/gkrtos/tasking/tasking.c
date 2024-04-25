@@ -42,12 +42,16 @@ struct gkrtos_tasking_task* gkrtos_tasking_task_new(
   task->function = NULL;
   task->run_frequency = 0;
   task->accounting.run_ticks = 0;
+  task->stackptr = NULL;
   return task;
 }
 
 enum gkrtos_tasking_priority gkrtos_tasking_priority_user(uint8_t priority) {
   return GKRTOS_TASKING_PRIORITY_USER + priority;
 }
+
+// TODO: Implement!!!
+gkrtos_stackptr_t gkrtos_internal_context_switch() { return NULL; }
 
 // Requires OS Spinlock
 enum gkrtos_result gkrtos_tasking_queue_task(struct gkrtos_tasking_task* task) {

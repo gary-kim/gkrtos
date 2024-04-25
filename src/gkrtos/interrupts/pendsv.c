@@ -13,20 +13,23 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef GKRTOS_RP2040_DEFS_H
-#define GKRTOS_RP2040_DEFS_H
-#include "pico/stdlib.h"
+#include "pendsv.h"
 
-#define GKRTOS_SPINLOCK_ID_MINIMUM 16
-#define GKRTOS_SPINLOCK_ID_MAXIMUM 31
+#include "gkrtos/misc/misc.h"
+#include "hardware/exception.h"
+#include "hardware/regs/m0plus.h"
+#include "rp2040/rp2040_defs.h"
 
-#define GKRTOS_SPINLOCK_ID_OS1 PICO_SPINLOCK_ID_OS1
-#define GKRTOS_SPINLOCK_ID_OS2 PICO_SPINLOCK_ID_OS2
+gkrtos_stackptr_t gkrtos_pendsv_handler_c(gkrtos_stackptr_t stackptr) {
+  uint32_t core_id = gkrtos_get_cpuid();
+}
 
-#define GKRTOS_SYSTICK_PRIORITY 1
-#define GKRTOS_SVCALL_PRIORITY 1
-#define GKRTOS_PENDSV_PRIORITY 0
+enum gkrtos_result init_pendsv_handler() {
+  exception_set_exclusive_handler(PENDSV_EXCEPTION,
+                                  gkrtos_pendsv_context_switch);
 
-#define GKRTOS_ARCH_NUM_CORES 2
+  gkrtos_set_register(M0PLUS_SHPR3_OFFSET, M0PLUS_SHPR3_PRI_14_BITS,
+                      M0PLUS_SHPR3_PRI_14_LSB, GKRTOS_PENDSV_PRIORITY);
 
-#endif
+  return GKRTOS_RESULT_SUCCESS;
+}

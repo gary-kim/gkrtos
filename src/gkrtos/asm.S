@@ -72,5 +72,18 @@ gkrtos_trigger_svcall:
     svc #0
     pop {pc}
 
-// vim:ft=nasm
+    .thumb_func
+    .type gkrtos_pendsv_context_switch, %function
+    .global gkrtos_pendsv_context_switch
+gkrtos_pendsv_context_switch:
+    push {lr}
+    CONTEXT_SAVE r0
+    cpsid i
 
+    bl gkrtos_pendsv_handler_c
+
+    cpsie i
+    CONTEXT_RESTORE r0
+    pop {pc}
+
+// vim:ft=nasm
