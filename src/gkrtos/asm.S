@@ -59,7 +59,7 @@ gkrtos_isr_svcall:
     push {lr}
     CONTEXT_SAVE r0
     ldr r1, [r0, #32]	/* 1st argument (r0 on psp) */
-	ldr r2, [r0, #36]	/* 2nd argument (r1 on psp) */
+    ldr r2, [r0, #36]	/* 2nd argument (r1 on psp) */
     bl gkrtos_syvcall_handler
     CONTEXT_RESTORE r0
     pop {pc}
@@ -78,11 +78,9 @@ gkrtos_trigger_svcall:
 gkrtos_pendsv_context_switch:
     push {lr}
     CONTEXT_SAVE r0
-    cpsid i
 
     bl gkrtos_pendsv_handler_c
 
-    cpsie i
     CONTEXT_RESTORE r0
     pop {pc}
 

@@ -51,6 +51,7 @@ enum gkrtos_tasking_priority gkrtos_tasking_priority_user(uint8_t priority) {
   return GKRTOS_TASKING_PRIORITY_USER + priority;
 }
 
+// IMPORTANT: Assumes called in a critical region
 gkrtos_stackptr_t gkrtos_internal_context_switch(
     struct gkrtos_tasking_core* current_core,
     struct gkrtos_tasking_task* current_task,

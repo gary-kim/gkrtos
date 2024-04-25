@@ -15,6 +15,7 @@
 
 #include "pendsv.h"
 
+#include "gkrtos/concurrency/private_spinlock.h"
 #include "gkrtos/misc/misc.h"
 #include "gkrtos/tasking/tasking.h"
 #include "hardware/exception.h"
@@ -22,6 +23,9 @@
 #include "rp2040/rp2040_defs.h"
 
 gkrtos_stackptr_t gkrtos_pendsv_handler_c(gkrtos_stackptr_t stackptr) {
+  gkrtos_critical_section_data_structures_enter_blocking();
+  // BEGIN CRITICAL REGION
+
   uint32_t core_id = gkrtos_get_cpuid();
   struct gkrtos_tasking_core* current_core = &gkrtos_tasking_cores[core_id];
   struct gkrtos_tasking_task* current_task =
@@ -34,8 +38,12 @@ gkrtos_stackptr_t gkrtos_pendsv_handler_c(gkrtos_stackptr_t stackptr) {
     return stackptr;
   }
 
-  return gkrtos_internal_context_switch(current_core, current_task, next_task,
-                                        stackptr);
+  gkrtos_stackptr_t new_sp = gkrtos_internal_context_switch(
+      current_core, current_task, next_task, stackptr);
+
+  // END CRITICAL REGION
+  gkrtos_critical_section_data_structures_exit();
+  return new_sp;
 }
 
 enum gkrtos_result init_pendsv_handler() {

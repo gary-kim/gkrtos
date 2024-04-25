@@ -88,6 +88,7 @@ struct gkrtos_tasking_core {
 extern struct gkrtos_tasking_task gkrtos_task_list[GKRTOS_CONFIG_MAX_TASKS];
 extern struct gkrtos_tasking_core gkrtos_tasking_cores[GKRTOS_ARCH_NUM_CORES];
 
+// IMPORTANT: Assumes called in a critical region
 gkrtos_stackptr_t gkrtos_internal_context_switch(
     struct gkrtos_tasking_core* current_core,
     struct gkrtos_tasking_task* current_task,
