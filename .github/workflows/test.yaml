@@ -16,6 +16,8 @@ jobs:
         with:
           fetch-depth: 0
           submodules: true
+      - name: submodules
+        run: git submodule update --init --recursive
       - name: install
         run: |
           mkdir tmp
