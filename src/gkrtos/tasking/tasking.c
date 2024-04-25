@@ -43,6 +43,7 @@ struct gkrtos_tasking_task* gkrtos_tasking_task_new(
   task->run_frequency = 0;
   task->accounting.run_ticks = 0;
   task->stackptr = NULL;
+  task->task_status = GKRTOS_TASKING_STATUS_NOT_READY;
   return task;
 }
 
@@ -50,8 +51,31 @@ enum gkrtos_tasking_priority gkrtos_tasking_priority_user(uint8_t priority) {
   return GKRTOS_TASKING_PRIORITY_USER + priority;
 }
 
-// TODO: Implement!!!
-gkrtos_stackptr_t gkrtos_internal_context_switch() { return NULL; }
+gkrtos_stackptr_t gkrtos_internal_context_switch(
+    struct gkrtos_tasking_core* current_core,
+    struct gkrtos_tasking_task* current_task,
+    struct gkrtos_tasking_task* next_task, gkrtos_stackptr_t current_task_sp) {
+  current_task->stackptr = current_task_sp;
+  current_core->currently_running_pid = current_task->pid;
+
+  uint64_t current_time = time_us_64();
+
+  // Do task accounting
+  if (current_task->task_status == GKRTOS_TASKING_STATUS_RUNNING) {
+    current_task->accounting.run_ticks =
+        current_time - current_task->accounting.ctx_switch_time;
+  }
+  next_task->accounting.ctx_switch_time = current_time;
+  next_task->task_status = GKRTOS_TASKING_STATUS_RUNNING;
+
+  current_core->currently_running_pid = next_task->pid;
+
+  return next_task->stackptr;
+}
+struct gkrtos_tasking_task* gkrtos_get_current_task() {
+  uint32_t core_id = gkrtos_get_cpuid();
+  return &gkrtos_task_list[gkrtos_tasking_cores[core_id].currently_running_pid];
+}
 
 // Requires OS Spinlock
 enum gkrtos_result gkrtos_tasking_queue_task(struct gkrtos_tasking_task* task) {

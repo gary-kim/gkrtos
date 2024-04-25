@@ -16,12 +16,26 @@
 #include "pendsv.h"
 
 #include "gkrtos/misc/misc.h"
+#include "gkrtos/tasking/tasking.h"
 #include "hardware/exception.h"
 #include "hardware/regs/m0plus.h"
 #include "rp2040/rp2040_defs.h"
 
 gkrtos_stackptr_t gkrtos_pendsv_handler_c(gkrtos_stackptr_t stackptr) {
   uint32_t core_id = gkrtos_get_cpuid();
+  struct gkrtos_tasking_core* current_core = &gkrtos_tasking_cores[core_id];
+  struct gkrtos_tasking_task* current_task =
+      &gkrtos_task_list[current_core->currently_running_pid];
+  struct gkrtos_tasking_task* next_task =
+      &gkrtos_task_list[current_core->queued_task];
+
+  if (current_core->queued_task == current_task->pid) {
+    // Looks like a new task was not queued. Just pop back to the former task.
+    return stackptr;
+  }
+
+  return gkrtos_internal_context_switch(current_core, current_task, next_task,
+                                        stackptr);
 }
 
 enum gkrtos_result init_pendsv_handler() {

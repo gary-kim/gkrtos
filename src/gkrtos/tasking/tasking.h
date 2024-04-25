@@ -30,6 +30,13 @@ enum gkrtos_tasking_priority {
   GKRTOS_TASKING_PRIORITY_USER,
 };
 
+enum gkrtos_tasking_status {
+  GKRTOS_TASKING_STATUS_RUNNING,
+  GKRTOS_TASKING_STATUS_SLEEPING,
+  GKRTOS_TASKING_STATUS_COMPLETE,
+  GKRTOS_TASKING_STATUS_NOT_READY,
+};
+
 typedef uint32_t gkrtos_pid_t;
 typedef void (*gkrtos_tasking_function_t)();
 
@@ -49,6 +56,9 @@ struct gkrtos_tasking_task {
   // lifetime of the process.
   uint32_t currently_assigned_core;
 
+  // task_status contains the current status of the task.
+  enum gkrtos_tasking_status task_status;
+
   // function stores the actual function to run. For most standard tasks, this
   // is only used once during initial setup. This is more useful for specific
   // frequency tasks that will run the task at a specific frequency (which is
@@ -65,18 +75,23 @@ struct gkrtos_tasking_task {
   gkrtos_stackptr_t stackptr;
 
   struct {
+    uint64_t ctx_switch_time;
     uint64_t run_ticks;
   } accounting;
 };
 
 struct gkrtos_tasking_core {
   gkrtos_pid_t currently_running_pid;
+  gkrtos_pid_t queued_task;
 };
 
 extern struct gkrtos_tasking_task gkrtos_task_list[GKRTOS_CONFIG_MAX_TASKS];
 extern struct gkrtos_tasking_core gkrtos_tasking_cores[GKRTOS_ARCH_NUM_CORES];
 
-gkrtos_stackptr_t gkrtos_internal_context_switch();
+gkrtos_stackptr_t gkrtos_internal_context_switch(
+    struct gkrtos_tasking_core* current_core,
+    struct gkrtos_tasking_task* current_task,
+    struct gkrtos_tasking_task* next_task, gkrtos_stackptr_t current_task_sp);
 
 // ===========================
 // === OS Public Functions ===
@@ -86,5 +101,7 @@ struct gkrtos_tasking_task* gkrtos_tasking_task_new(
     enum gkrtos_tasking_priority priority);
 
 enum gkrtos_tasking_priority gkrtos_tasking_priority_user(uint8_t priority);
+
+struct gkrtos_tasking_task* gkrtos_get_current_task();
 
 #endif

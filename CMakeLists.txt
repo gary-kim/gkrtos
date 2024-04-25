@@ -20,6 +20,7 @@ include(arch/rp2040/pico-sdk/pico_sdk_init.cmake)
 project(gkrtos)
 
 set(CMAKE_C_STANDARD 17)
+enable_language(ASM)
 
 pico_sdk_init()
 
