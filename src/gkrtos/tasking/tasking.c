@@ -108,6 +108,9 @@ enum gkrtos_result gkrtos_internal_tasking_init() {
 
 // Requires OS Spinlock
 enum gkrtos_result gkrtos_tasking_queue_task(struct gkrtos_tasking_task* task) {
+  // Start with a simple round-robin implementation that ignores user
+  // properties. In the long run, this should be capable of using user
+  // priorities to fairly time split.
   gkrtos_critical_section_data_structures_enter_blocking();
   // BEGIN CRITICAL REGION
 
