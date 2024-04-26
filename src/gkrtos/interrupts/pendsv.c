@@ -15,6 +15,7 @@
 
 #include "pendsv.h"
 
+#include "gkrtos/asm.h"
 #include "gkrtos/concurrency/private_spinlock.h"
 #include "gkrtos/misc/misc.h"
 #include "gkrtos/tasking/tasking.h"

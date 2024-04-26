@@ -20,5 +20,4 @@
 #include "gkrtos/tasking/tasking.h"
 
 gkrtos_stackptr_t gkrtos_pendsv_handler_c(gkrtos_stackptr_t stackptr);
-void gkrtos_pendsv_context_switch();
 #endif

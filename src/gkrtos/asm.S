@@ -73,6 +73,14 @@ gkrtos_trigger_svcall:
     pop {pc}
 
     .thumb_func
+    .type gkrtos_internal_stack_init, %function
+    .global gkrtos_internal_stack_init
+gkrtos_internal_stack_init:
+    push {r1}
+    CONTEXT_SAVE r0
+    bx lr
+
+    .thumb_func
     .type gkrtos_pendsv_context_switch, %function
     .global gkrtos_pendsv_context_switch
 gkrtos_pendsv_context_switch:

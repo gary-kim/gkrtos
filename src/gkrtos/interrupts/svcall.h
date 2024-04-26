@@ -20,7 +20,6 @@
 #include "gkrtos/misc/misc.h"
 #include "gkrtos/syscalls/syscalls.h"
 
-void gkrtos_isr_svcall();
 void gkrtos_svcall_handler(gkrtos_stackptr_t stackptr, enum gkrtos_syscall,
                            void* args);
 

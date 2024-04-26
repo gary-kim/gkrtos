@@ -15,6 +15,7 @@
 
 #include "svcall.h"
 
+#include "gkrtos/asm.h"
 #include "gkrtos/hardware/rp2040.h"
 #include "gkrtos/syscalls/syscalls.h"
 #include "hardware/exception.h"

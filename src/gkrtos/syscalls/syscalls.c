@@ -17,10 +17,8 @@
 
 #include <stddef.h>
 
+#include "gkrtos/asm.h"
 #include "gkrtos/misc/misc.h"
-
-// Implemented in src/gkrtos/asm.S
-void gkrtos_trigger_svcall(enum gkrtos_syscall, void* args);
 
 void gkrtos_syscall(enum gkrtos_syscall syscall, void* args) {
   gkrtos_trigger_svcall(syscall, args);

@@ -20,6 +20,7 @@
 
 #include "gkrtos/concurrency/private_spinlock.h"
 #include "gkrtos/config.h"
+#include "gkrtos/asm.h"
 
 struct gkrtos_tasking_task gkrtos_task_list[GKRTOS_CONFIG_MAX_TASKS];
 
@@ -63,8 +64,8 @@ gkrtos_stackptr_t gkrtos_internal_context_switch(
 
   // Do task accounting
   if (current_task->task_status == GKRTOS_TASKING_STATUS_RUNNING) {
-    current_task->accounting.run_ticks =
-        current_time - current_task->accounting.ctx_switch_time;
+    current_task->accounting.run_ticks +=
+        (current_time - current_task->accounting.ctx_switch_time) / 1000llu;
   }
   next_task->accounting.ctx_switch_time = current_time;
   next_task->task_status = GKRTOS_TASKING_STATUS_RUNNING;
@@ -73,9 +74,25 @@ gkrtos_stackptr_t gkrtos_internal_context_switch(
 
   return next_task->stackptr;
 }
+
 struct gkrtos_tasking_task* gkrtos_get_current_task() {
   uint32_t core_id = gkrtos_get_cpuid();
   return &gkrtos_task_list[gkrtos_tasking_cores[core_id].currently_running_pid];
+}
+
+// Requires OS Spinlock
+gkrtos_stackptr_t gkrtos_internal_create_new_stack(
+    size_t stack_size, gkrtos_tasking_function_t fn_ptr) {
+  gkrtos_critical_section_data_structures_enter_blocking();
+  // BEGIN CRITICAL REGION
+
+  // TODO: Check if going to the end of the stack is really necessary
+  gkrtos_stackptr_t stackptr = malloc(stack_size) + stack_size - 1; // NOLINT(*-misplaced-pointer-arithmetic-in-alloc)
+  gkrtos_internal_stack_init(stackptr, fn_ptr);
+
+  // END CRITICAL REGION
+  gkrtos_critical_section_data_structures_exit();
+  return stackptr;
 }
 
 // Requires OS Spinlock

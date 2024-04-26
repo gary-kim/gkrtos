@@ -53,5 +53,12 @@ void gkrtos_internal_syscall_yield(struct gkrtos_tasking_task* task) {}
 void gkrtos_internal_syscall_sleep_until(struct gkrtos_tasking_task* task,
                                          absolute_time_t* milliseconds) {}
 void gkrtos_internal_syscall_create_task(
-    struct gkrtos_tasking_task* task,
-    struct gkrtos_syscall_create_task_args* args) {}
+    struct gkrtos_tasking_task* calling_task,
+    struct gkrtos_syscall_create_task_args* args) {
+  struct gkrtos_tasking_task* new_task =
+      gkrtos_tasking_task_new(gkrtos_tasking_priority_user(args->priority));
+  new_task->function = args->function;
+  new_task->stackptr = gkrtos_internal_create_new_stack(args->stack_size,
+                                                        args->function);
+  // TODO: Finish
+}

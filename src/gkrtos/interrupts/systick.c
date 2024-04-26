@@ -15,6 +15,7 @@
 
 #include "systick.h"
 
+#include "gkrtos/asm.h"
 #include "gkrtos/misc/misc.h"
 #include "hardware/exception.h"
 #include "hardware/regs/m0plus.h"

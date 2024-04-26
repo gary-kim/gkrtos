@@ -94,6 +94,9 @@ gkrtos_stackptr_t gkrtos_internal_context_switch(
     struct gkrtos_tasking_task* current_task,
     struct gkrtos_tasking_task* next_task, gkrtos_stackptr_t current_task_sp);
 
+gkrtos_stackptr_t gkrtos_internal_create_new_stack(
+    size_t stack_size, gkrtos_tasking_function_t fn_ptr);
+
 // ===========================
 // === OS Public Functions ===
 // ===========================

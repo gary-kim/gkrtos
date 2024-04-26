@@ -17,7 +17,6 @@
 #define GKRTOS_INTERRUPTS_SYSTICK_H
 
 void gkrtos_systick_handler();
-void gkrtos_isr_systick();
 
 enum gkrtos_result init_systick_handler();
 

@@ -36,6 +36,7 @@ enum gkrtos_syscall {
 struct gkrtos_syscall_create_task_args {
   enum gkrtos_tasking_priority priority;
   gkrtos_tasking_function_t function;
+  size_t stack_size;
   uint32_t run_frequency;
 };
 
