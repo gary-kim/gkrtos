@@ -26,7 +26,10 @@ struct gkrtos_list_item* gkrtos_list_item_new() {
 }
 
 struct gkrtos_list* gkrtos_list_append(struct gkrtos_list* list,
-                                       struct gkrtos_list_item* item) {
+                                       void* raw_item) {
+  struct gkrtos_list_item* item = gkrtos_list_item_new();
+  item->data = raw_item;
+
   if (list->length == 0) {
     // First item in list
     list->head = item;
@@ -46,7 +49,10 @@ struct gkrtos_list* gkrtos_list_append(struct gkrtos_list* list,
 }
 
 struct gkrtos_list* gkrtos_list_prepend(struct gkrtos_list* list,
-                                        struct gkrtos_list_item* item) {
+                                        void* raw_item) {
+  struct gkrtos_list_item* item = gkrtos_list_item_new();
+  item->data = raw_item;
+
   if (list->length == 0) {
     // First item in the list
     list->head = item;
@@ -101,8 +107,14 @@ struct gkrtos_list* gkrtos_list_new() {
   return list;
 }
 
-void* gkrtos_list_get_head(struct gkrtos_list* list) { return list->head; }
-void* gkrtos_list_get_tail(struct gkrtos_list* list) { return list->tail; }
+void* gkrtos_list_get_head(struct gkrtos_list* list) {
+  return list->head->data;
+}
+
+void* gkrtos_list_get_tail(struct gkrtos_list* list) {
+  return list->tail->data;
+}
+
 void* gkrtos_list_rotate(struct gkrtos_list* list) {
   if (list->length > 0) {
     list->head = list->head->next;

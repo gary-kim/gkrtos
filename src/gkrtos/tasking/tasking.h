@@ -109,6 +109,23 @@ struct gkrtos_tasking_task* gkrtos_tasking_task_new(
 
 enum gkrtos_tasking_priority gkrtos_tasking_priority_user(uint8_t priority);
 
-struct gkrtos_tasking_task* gkrtos_get_current_task();
+// Requires OS Spinlock
+struct gkrtos_tasking_task* gkrtos_tasking_get_next_task();
+
+// Requires OS Spinlock
+struct gkrtos_tasking_task* gkrtos_internal_queue_context_switch(
+    struct gkrtos_tasking_task* task);
+
+inline struct gkrtos_tasking_core* gkrtos_tasking_get_current_core() {
+  uint32_t core_id = gkrtos_get_cpuid();
+  return &gkrtos_tasking_cores[core_id];
+}
+
+inline struct gkrtos_tasking_task* gkrtos_tasking_get_current_task() {
+  return &gkrtos_task_list[gkrtos_tasking_get_current_core()
+                               ->currently_running_pid];
+}
+
+enum gkrtos_result gkrtos_tasking_queue_task(struct gkrtos_tasking_task* task);
 
 #endif

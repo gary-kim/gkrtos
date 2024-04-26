@@ -22,6 +22,7 @@
 #include "gkrtos/concurrency/private_spinlock.h"
 #include "gkrtos/config.h"
 #include "gkrtos/structures/list.h"
+#include "hardware/exception.h"
 
 struct gkrtos_tasking_task gkrtos_task_list[GKRTOS_CONFIG_MAX_TASKS];
 struct gkrtos_tasking_core gkrtos_tasking_core[GKRTOS_ARCH_NUM_CORES];
@@ -80,9 +81,33 @@ gkrtos_stackptr_t gkrtos_internal_context_switch(
   return next_task->stackptr;
 }
 
-struct gkrtos_tasking_task* gkrtos_get_current_task() {
-  uint32_t core_id = gkrtos_get_cpuid();
-  return &gkrtos_task_list[gkrtos_tasking_cores[core_id].currently_running_pid];
+// Requires OS Spinlock
+struct gkrtos_tasking_task* gkrtos_tasking_get_next_task() {
+  gkrtos_critical_section_data_structures_enter_blocking();
+  // BEGIN CRITICAL SECTION
+
+  gkrtos_list_rotate(gkrtos_tasking_queue);
+  struct gkrtos_tasking_task* new_task =
+      gkrtos_list_get_head(gkrtos_tasking_queue);
+
+  // END CRITICAL SECTION
+  gkrtos_critical_section_data_structures_exit();
+  return new_task;
+}
+
+// Requires OS Spinlock
+struct gkrtos_tasking_task* gkrtos_internal_queue_context_switch(
+    struct gkrtos_tasking_task* task) {
+  gkrtos_critical_section_data_structures_enter_blocking();
+  // BEGIN CRITICAL SECTION
+
+  struct gkrtos_tasking_core* current_core = gkrtos_tasking_get_current_core();
+  current_core->queued_task = task->pid;
+  irq_set_pending(PENDSV_EXCEPTION);
+
+  // END CRITICAL SECTION
+  gkrtos_critical_section_data_structures_exit();
+  return task;
 }
 
 // Requires OS Spinlock
@@ -114,6 +139,9 @@ enum gkrtos_result gkrtos_tasking_queue_task(struct gkrtos_tasking_task* task) {
   gkrtos_critical_section_data_structures_enter_blocking();
   // BEGIN CRITICAL REGION
 
+  gkrtos_list_prepend(gkrtos_tasking_queue, task);
+
   // END CRITICAL REGION
   gkrtos_critical_section_data_structures_exit();
+  return GKRTOS_RESULT_SUCCESS;
 }

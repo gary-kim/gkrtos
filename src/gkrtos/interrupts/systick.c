@@ -23,7 +23,14 @@
 #include "rp2040/rp2040_defs.h"
 
 void gkrtos_systick_handler() {
-  // SysTick handling
+  uint64_t current_time = time_us_64();
+  struct gkrtos_tasking_task* current_task = gkrtos_tasking_get_current_task();
+  uint64_t elapsed_task_time =
+      current_time - current_task->accounting.ctx_switch_time;
+  if (elapsed_task_time > GKRTOS_TASKING_TASK_ELAPSED_TIME_US) {
+    struct gkrtos_tasking_task* next_task = gkrtos_tasking_get_next_task();
+    gkrtos_internal_queue_context_switch(next_task);
+  }
 }
 
 enum gkrtos_result gkrtos_init_systick_handler() {

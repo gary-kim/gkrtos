@@ -60,5 +60,6 @@ void gkrtos_internal_syscall_create_task(
   new_task->function = args->function;
   new_task->stackptr =
       gkrtos_internal_create_new_stack(args->stack_size, args->function);
+  gkrtos_tasking_queue_task(new_task);
   // TODO: Finish
 }
