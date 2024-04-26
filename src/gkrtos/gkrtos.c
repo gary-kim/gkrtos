@@ -25,7 +25,8 @@ enum gkrtos_result gkrtos_init() {
   if (gkrtos_critical_section_init() == GKRTOS_RESULT_SUCCESS &&
       gkrtos_init_pendsv_handler() == GKRTOS_RESULT_SUCCESS &&
       gkrtos_init_svcall_handler() == GKRTOS_RESULT_SUCCESS &&
-      gkrtos_init_systick_handler() == GKRTOS_RESULT_SUCCESS)
+      gkrtos_init_systick_handler() == GKRTOS_RESULT_SUCCESS &&
+      gkrtos_internal_tasking_init() == GKRTOS_RESULT_SUCCESS)
     return GKRTOS_RESULT_SUCCESS;
   return GKRTOS_RESULT_ERROR;
 }

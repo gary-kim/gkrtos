@@ -1,6 +1,8 @@
 #ifndef GKRTOS_ASM_H
 #define GKRTOS_ASM_H
 
+#include "gkrtos/misc/misc.h"
+#include "gkrtos/syscalls/syscalls.h"
 #include "gkrtos/tasking/tasking.h"
 
 // Initialize a new stack for a task

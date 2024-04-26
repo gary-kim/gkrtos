@@ -98,6 +98,8 @@ gkrtos_stackptr_t gkrtos_internal_context_switch(
 gkrtos_stackptr_t gkrtos_internal_create_new_stack(
     size_t stack_size, gkrtos_tasking_function_t fn_ptr);
 
+enum gkrtos_result gkrtos_internal_tasking_init();
+
 // ===========================
 // === OS Public Functions ===
 // ===========================

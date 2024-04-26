@@ -21,6 +21,7 @@
 #include "gkrtos/asm.h"
 #include "gkrtos/concurrency/private_spinlock.h"
 #include "gkrtos/config.h"
+#include "gkrtos/structures/list.h"
 
 struct gkrtos_tasking_task gkrtos_task_list[GKRTOS_CONFIG_MAX_TASKS];
 struct gkrtos_tasking_core gkrtos_tasking_core[GKRTOS_ARCH_NUM_CORES];
@@ -99,6 +100,10 @@ gkrtos_stackptr_t gkrtos_internal_create_new_stack(
   // END CRITICAL REGION
   gkrtos_critical_section_data_structures_exit();
   return stackptr;
+}
+enum gkrtos_result gkrtos_internal_tasking_init() {
+  gkrtos_tasking_queue = gkrtos_list_new();
+  return GKRTOS_RESULT_SUCCESS;
 }
 
 // Requires OS Spinlock
