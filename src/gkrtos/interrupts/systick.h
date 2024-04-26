@@ -18,6 +18,6 @@
 
 void gkrtos_systick_handler();
 
-enum gkrtos_result init_systick_handler();
+enum gkrtos_result gkrtos_init_systick_handler();
 
 #endif

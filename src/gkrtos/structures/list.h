@@ -42,4 +42,10 @@ struct gkrtos_list *gkrtos_list_prepend(struct gkrtos_list *list,
 
 struct gkrtos_list *gkrtos_list_new();
 
+void *gkrtos_list_get_tail(struct gkrtos_list *list);
+
+void *gkrtos_list_rotate(struct gkrtos_list *list);
+
+void *gkrtos_list_get_head(struct gkrtos_list *list);
+
 #endif

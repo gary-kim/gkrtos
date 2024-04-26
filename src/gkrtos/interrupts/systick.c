@@ -26,7 +26,7 @@ void gkrtos_systick_handler() {
   // SysTick handling
 }
 
-enum gkrtos_result init_systick_handler() {
+enum gkrtos_result gkrtos_init_systick_handler() {
   exception_set_exclusive_handler(SYSTICK_EXCEPTION, gkrtos_isr_systick);
   // Documented here:
   // https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf#tab-registerlist_m0plus

@@ -100,3 +100,14 @@ struct gkrtos_list* gkrtos_list_new() {
   list->length = 0;
   return list;
 }
+
+void* gkrtos_list_get_head(struct gkrtos_list* list) { return list->head; }
+void* gkrtos_list_get_tail(struct gkrtos_list* list) { return list->tail; }
+void* gkrtos_list_rotate(struct gkrtos_list* list) {
+  if (list->length > 0) {
+    list->head = list->head->next;
+    list->tail = list->tail->next;
+    return list->head->data;
+  }
+  return NULL;
+}

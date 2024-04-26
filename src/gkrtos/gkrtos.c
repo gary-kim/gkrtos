@@ -15,7 +15,20 @@
 
 #include <stdio.h>
 
+#include "gkrtos/concurrency/private_spinlock.h"
+#include "gkrtos/interrupts/pendsv.h"
+#include "gkrtos/interrupts/svcall.h"
+#include "gkrtos/interrupts/systick.h"
 #include "pico/stdlib.h"
+
+enum gkrtos_result gkrtos_init() {
+  if (gkrtos_critical_section_init() == GKRTOS_RESULT_SUCCESS &&
+      gkrtos_init_pendsv_handler() == GKRTOS_RESULT_SUCCESS &&
+      gkrtos_init_svcall_handler() == GKRTOS_RESULT_SUCCESS &&
+      gkrtos_init_systick_handler() == GKRTOS_RESULT_SUCCESS)
+    return GKRTOS_RESULT_SUCCESS;
+  return GKRTOS_RESULT_ERROR;
+}
 
 int main() {
   setup_default_uart();

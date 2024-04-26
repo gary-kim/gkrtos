@@ -47,7 +47,7 @@ gkrtos_stackptr_t gkrtos_pendsv_handler_c(gkrtos_stackptr_t stackptr) {
   return new_sp;
 }
 
-enum gkrtos_result init_pendsv_handler() {
+enum gkrtos_result gkrtos_init_pendsv_handler() {
   exception_set_exclusive_handler(PENDSV_EXCEPTION,
                                   gkrtos_pendsv_context_switch);
 

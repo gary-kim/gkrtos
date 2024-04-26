@@ -18,11 +18,13 @@
 #include <malloc.h>
 #include <stdint-gcc.h>
 
+#include "gkrtos/asm.h"
 #include "gkrtos/concurrency/private_spinlock.h"
 #include "gkrtos/config.h"
-#include "gkrtos/asm.h"
 
 struct gkrtos_tasking_task gkrtos_task_list[GKRTOS_CONFIG_MAX_TASKS];
+struct gkrtos_tasking_core gkrtos_tasking_core[GKRTOS_ARCH_NUM_CORES];
+struct gkrtos_list* gkrtos_tasking_queue;
 
 // Requires OS Spinlock
 struct gkrtos_tasking_task* gkrtos_tasking_task_new(
@@ -31,7 +33,9 @@ struct gkrtos_tasking_task* gkrtos_tasking_task_new(
 
   gkrtos_critical_section_data_structures_enter_blocking();
   // BEGIN CRITICAL REGION
+
   gkrtos_pid_t process_pid = current_max_pid++;
+
   // END CRITICAL REGION
   gkrtos_critical_section_data_structures_exit();
 
@@ -87,7 +91,9 @@ gkrtos_stackptr_t gkrtos_internal_create_new_stack(
   // BEGIN CRITICAL REGION
 
   // TODO: Check if going to the end of the stack is really necessary
-  gkrtos_stackptr_t stackptr = malloc(stack_size) + stack_size - 1; // NOLINT(*-misplaced-pointer-arithmetic-in-alloc)
+  gkrtos_stackptr_t stackptr =
+      malloc(stack_size) + stack_size -
+      1;  // NOLINT(*-misplaced-pointer-arithmetic-in-alloc)
   gkrtos_internal_stack_init(stackptr, fn_ptr);
 
   // END CRITICAL REGION

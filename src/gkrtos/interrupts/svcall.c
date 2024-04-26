@@ -24,7 +24,7 @@
 void gkrtos_svcall_handler(gkrtos_stackptr_t stackptr, enum gkrtos_syscall,
                            void* args) {}
 
-enum gkrtos_result init_svcall_handler() {
+enum gkrtos_result gkrtos_init_svcall_handler() {
   exception_set_exclusive_handler(SVCALL_EXCEPTION, gkrtos_isr_svcall);
 
   // Set system handler priority
