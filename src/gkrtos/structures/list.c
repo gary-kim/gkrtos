@@ -115,6 +115,36 @@ void* gkrtos_list_get_tail(struct gkrtos_list* list) {
   return list->tail->data;
 }
 
+struct gkrtos_list_item* gkrtos_list_get_item_with_data(
+    struct gkrtos_list* list, void* data) {
+  if (list->length == 0) return NULL;
+
+  if (list->head->data == data) {
+    return list->head;
+  }
+
+  if (list->tail->data == data) {
+    return list->tail;
+  }
+
+  struct gkrtos_list_item* item = list->head->next;
+
+  while (item != list->tail) {
+    if (item->data == data) return item;
+    item = item->next;
+  }
+
+  return NULL;
+}
+
+struct gkrtos_list_item* gkrtos_list_get_tail_item(struct gkrtos_list* list) {
+  return list->tail;
+}
+
+struct gkrtos_list_item* gkrtos_list_get_head_item(struct gkrtos_list* list) {
+  return list->head;
+}
+
 void* gkrtos_list_rotate(struct gkrtos_list* list) {
   if (list->length > 0) {
     list->head = list->head->next;

@@ -50,6 +50,7 @@ struct gkrtos_tasking_task* gkrtos_tasking_task_new(
   task->run_frequency = 0;
   task->accounting.run_ticks = 0;
   task->stackptr = NULL;
+  task->stackbase = NULL;
   task->task_status = GKRTOS_TASKING_STATUS_NOT_READY;
   return task;
 }
@@ -72,6 +73,7 @@ gkrtos_stackptr_t gkrtos_internal_context_switch(
   if (current_task->task_status == GKRTOS_TASKING_STATUS_RUNNING) {
     current_task->accounting.run_ticks +=
         (current_time - current_task->accounting.ctx_switch_time) / 1000llu;
+    current_task->task_status = GKRTOS_TASKING_STATUS_SLEEPING;
   }
   next_task->accounting.ctx_switch_time = current_time;
   next_task->task_status = GKRTOS_TASKING_STATUS_RUNNING;
@@ -144,4 +146,16 @@ enum gkrtos_result gkrtos_tasking_queue_task(struct gkrtos_tasking_task* task) {
   // END CRITICAL REGION
   gkrtos_critical_section_data_structures_exit();
   return GKRTOS_RESULT_SUCCESS;
+}
+
+enum gkrtos_result gkrtos_tasking_dequeue_task(
+    struct gkrtos_tasking_task* task) {
+  gkrtos_critical_section_data_structures_enter_blocking();
+  // BEGIN CRITICAL SECTION
+
+  gkrtos_list_remove(gkrtos_tasking_queue, gkrtos_list_get_item_with_data(
+                                               gkrtos_tasking_queue, task));
+
+  // END CRITICAL SECTION
+  gkrtos_critical_section_data_structures_exit();
 }

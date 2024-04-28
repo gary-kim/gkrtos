@@ -38,9 +38,19 @@ struct gkrtos_list *gkrtos_list_append(struct gkrtos_list *list, void *item);
 
 struct gkrtos_list *gkrtos_list_prepend(struct gkrtos_list *list, void *item);
 
+struct gkrtos_list *gkrtos_list_remove(struct gkrtos_list *list,
+                                       struct gkrtos_list_item *item);
+
 struct gkrtos_list *gkrtos_list_new();
 
 void *gkrtos_list_get_tail(struct gkrtos_list *list);
+
+struct gkrtos_list_item *gkrtos_list_get_tail_item(struct gkrtos_list *list);
+
+struct gkrtos_list_item *gkrtos_list_get_head_item(struct gkrtos_list *list);
+
+struct gkrtos_list_item *gkrtos_list_get_item_with_data(
+    struct gkrtos_list *list, void *data);
 
 void *gkrtos_list_rotate(struct gkrtos_list *list);
 

@@ -74,6 +74,11 @@ struct gkrtos_tasking_task {
   // from this task occurs.
   gkrtos_stackptr_t stackptr;
 
+  // stackbase keeps track of the base of the stack for this process. Mainly
+  // used for freeing the stack space later.
+  // TODO: Actually use this. Currently unused for simplicity
+  gkrtos_stackptr_t stackbase;
+
   struct {
     uint64_t ctx_switch_time;
     uint64_t run_ticks;
@@ -127,5 +132,8 @@ inline struct gkrtos_tasking_task* gkrtos_tasking_get_current_task() {
 }
 
 enum gkrtos_result gkrtos_tasking_queue_task(struct gkrtos_tasking_task* task);
+
+enum gkrtos_result gkrtos_tasking_dequeue_task(
+    struct gkrtos_tasking_task* task);
 
 #endif

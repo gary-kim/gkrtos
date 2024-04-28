@@ -43,12 +43,29 @@ void gkrtos_internal_syscall(struct gkrtos_tasking_task* task,
   }
 }
 
-void gkrtos_internal_syscall_suicide(struct gkrtos_tasking_task* task) {}
+void gkrtos_internal_syscall_suicide(struct gkrtos_tasking_task* task) {
+  gkrtos_internal_syscall_kill(task, &task->pid);
+}
 
-void gkrtos_internal_syscall_kill(struct gkrtos_tasking_task* task,
-                                  gkrtos_pid_t* pid) {}
+void gkrtos_internal_syscall_kill(const struct gkrtos_tasking_task* task,
+                                  const gkrtos_pid_t* pid) {
+  struct gkrtos_tasking_task* dying_task = &gkrtos_task_list[*pid];
+  dying_task->task_status = GKRTOS_TASKING_STATUS_COMPLETE;
 
-void gkrtos_internal_syscall_yield(struct gkrtos_tasking_task* task) {}
+  // Queue up the next task to start (since we are killing the current task)
+  struct gkrtos_tasking_task* next_task = gkrtos_tasking_get_next_task();
+
+  // Specifically delay actually dequeueing to make sure that the
+  // gkrtos_tasking_get_next_task gets the correct next task.
+  gkrtos_tasking_dequeue_task(dying_task);
+
+  gkrtos_internal_queue_context_switch(next_task);
+}
+
+void gkrtos_internal_syscall_yield(struct gkrtos_tasking_task* task) {
+  struct gkrtos_tasking_task* next_task = gkrtos_tasking_get_next_task();
+  gkrtos_internal_queue_context_switch(next_task);
+}
 
 void gkrtos_internal_syscall_sleep_until(struct gkrtos_tasking_task* task,
                                          absolute_time_t* milliseconds) {}
@@ -61,5 +78,4 @@ void gkrtos_internal_syscall_create_task(
   new_task->stackptr =
       gkrtos_internal_create_new_stack(args->stack_size, args->function);
   gkrtos_tasking_queue_task(new_task);
-  // TODO: Finish
 }

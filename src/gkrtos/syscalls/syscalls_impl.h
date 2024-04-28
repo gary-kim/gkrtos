@@ -28,8 +28,8 @@
 void gkrtos_internal_syscall(struct gkrtos_tasking_task* task,
                              enum gkrtos_syscall syscall, void* args);
 void gkrtos_internal_syscall_suicide(struct gkrtos_tasking_task* task);
-void gkrtos_internal_syscall_kill(struct gkrtos_tasking_task* task,
-                                  gkrtos_pid_t* pid);
+void gkrtos_internal_syscall_kill(const struct gkrtos_tasking_task* task,
+                                  const gkrtos_pid_t* pid);
 void gkrtos_internal_syscall_yield(struct gkrtos_tasking_task* task);
 void gkrtos_internal_syscall_sleep_until(struct gkrtos_tasking_task* task,
                                          absolute_time_t* milliseconds);
