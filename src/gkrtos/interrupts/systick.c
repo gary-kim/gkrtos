@@ -16,6 +16,7 @@
 #include "systick.h"
 
 #include "gkrtos/asm.h"
+#include "gkrtos/hardware/rp2040.h"
 #include "gkrtos/misc/misc.h"
 #include "hardware/exception.h"
 #include "hardware/regs/m0plus.h"
@@ -39,9 +40,12 @@ enum gkrtos_result gkrtos_init_systick_handler() {
   // https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf#tab-registerlist_m0plus
   systick_hw->csr = ((0x1) |       // ENABLE: enable
                      (0x1 << 1) |  // TICKINT: Enable SysTick Exceptions
-                     (0x1 << 2)    // CLKSOURCE: Processor Clockj
+                     (0x1 << 2)    // CLKSOURCE: Processor Clock
   );
-  // TODO: Determine a more appropriate value for this.
+
+  // Make sure the value isn't so large that it can't be used
+  assert(gkrtos_get_systick_rvr_value() < 0x00FFFFFF);
+
   systick_hw->rvr = 0x00FFFFFF;
 
   // Set system handler priority

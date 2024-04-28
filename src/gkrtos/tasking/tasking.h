@@ -79,6 +79,14 @@ struct gkrtos_tasking_task {
   // TODO: Actually use this. Currently unused for simplicity
   gkrtos_stackptr_t stackbase;
 
+  // next_run_time contains the time at which this task must be queued next.
+  // This value is set to zero to indicate that there is no timing
+  // requirement. If the function must be run by a specific time, this will
+  // be set to the time at which it must be run. Then, on the systick before
+  // this time is reached, the task will be context switched to.
+  // TODO: Actually set this up
+  uint64_t next_run_time;
+
   struct {
     uint64_t ctx_switch_time;
     uint64_t run_ticks;

@@ -24,3 +24,5 @@ typedef void* gkrtos_stackptr_t;
 uint32_t gkrtos_get_cpuid();
 
 uint32_t gkrtos_get_cpu_frequency();
+
+uint32_t gkrtos_get_systick_rvr_value();
