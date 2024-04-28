@@ -15,12 +15,13 @@ make -j $(nproc)
 
 While the intention is to make this RTOS architecture agnostic in the future and
 make it capable of running on many different microcontrollers. In the interest
-of time, it is being designed directly for the RP2040 initially. This will alter
+of time, it is being designed directly for the RP2040 initially. This will later
 be decoupled
 
 ### Useful Resources
 
 * ARMv6-M Reference Manual: https://documentation-service.arm.com/static/5f8ff05ef86e16515cdbf826
+* RP2040 Datasheet: https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf
 
 ### License
 
