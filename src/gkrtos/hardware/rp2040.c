@@ -25,5 +25,5 @@ uint32_t gkrtos_get_cpuid() { return sio_hw->cpuid; }
 uint32_t gkrtos_get_cpu_frequency() { return clock_get_hz(clk_sys); }
 
 uint32_t gkrtos_get_systick_rvr_value() {
-  return gkrtos_get_cpu_frequency() / GKRTOS_SYSTICK_FREQUENCY_HZ
+  return gkrtos_get_cpu_frequency() / GKRTOS_SYSTICK_FREQUENCY_HZ;
 }
