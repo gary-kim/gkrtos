@@ -7,9 +7,7 @@ packages:
   - gcc-c++
   - clang-tools-extra
 sources:
-  - "git@git.sr.ht:~gary-kim/gkrtos"
-secrets:
-  - 5de7ec36-b900-47ba-be3d-4303475f46c2
+  - "https://git.sr.ht/~gary-kim/gkrtos"
 tasks:
   - install: |
       cd gkrtos
