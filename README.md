@@ -2,6 +2,10 @@
 
 [![builds.sr.ht status](https://builds.sr.ht/~gary-kim/gkrtos/commits/master/test.yml.svg)](https://builds.sr.ht/~gary-kim/gkrtos/commits/master/test.yml?)
 
+* Project Home: [https://sr.ht/~gary-kim/gkrtos](https://sr.ht/~gary-kim/gkrtos)
+* Source Code: [https://git.sr.ht/~gary-kim/gkrtos](https://git.sr.ht/~gary-kim/gkrtos)
+* Development Mailing List: [https://lists.sr.ht/~gary-kim/public-inbox](https://lists.sr.ht/~gary-kim/public-inbox) ([~gary-kim/public-inbox@lists.sr.ht](mailto:~gary-kim/public-inbox@lists.sr.ht))
+
 ### Building
 
 ```bash
@@ -16,12 +20,13 @@ make -j $(nproc)
 While the intention is to make this RTOS architecture agnostic in the future and
 make it capable of running on many different microcontrollers. In the interest
 of time, it is being designed directly for the RP2040 initially. This will later
-be decoupled
+be decoupled.
 
 ### Useful Resources
 
 * ARMv6-M Reference Manual: https://documentation-service.arm.com/static/5f8ff05ef86e16515cdbf826
 * RP2040 Datasheet: https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf
+* RP2040 Hardware Design: https://datasheets.raspberrypi.com/rp2040/hardware-design-with-rp2040.pdf
 
 ### License
 
