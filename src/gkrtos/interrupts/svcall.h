@@ -20,8 +20,9 @@
 #include "gkrtos/misc/misc.h"
 #include "gkrtos/syscalls/syscalls.h"
 
-void gkrtos_svcall_handler(gkrtos_stackptr_t stackptr, enum gkrtos_syscall,
-                           void* args);
+gkrtos_stackptr_t gkrtos_svcall_handler(gkrtos_stackptr_t stackptr,
+                                        enum gkrtos_syscall syscall_number,
+                                        void* args);
 
 enum gkrtos_result gkrtos_init_svcall_handler();
 

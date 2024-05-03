@@ -16,7 +16,9 @@
 #ifndef GKRTOS_INTERRUPTS_SYSTICK_H
 #define GKRTOS_INTERRUPTS_SYSTICK_H
 
-void gkrtos_systick_handler();
+#include "gkrtos/hardware/rp2040.h"
+
+gkrtos_stackptr_t gkrtos_systick_handler(gkrtos_stackptr_t stackptr);
 
 enum gkrtos_result gkrtos_init_systick_handler();
 

@@ -23,7 +23,7 @@
 #include "hardware/structs/systick.h"
 #include "rp2040/rp2040_defs.h"
 
-void gkrtos_systick_handler() {
+gkrtos_stackptr_t gkrtos_systick_handler(gkrtos_stackptr_t stackptr) {
   uint64_t current_time = time_us_64();
   struct gkrtos_tasking_task* current_task = gkrtos_tasking_get_current_task();
   uint64_t elapsed_task_time =
@@ -32,6 +32,7 @@ void gkrtos_systick_handler() {
     struct gkrtos_tasking_task* next_task = gkrtos_tasking_get_next_task();
     gkrtos_internal_queue_context_switch(next_task);
   }
+  return stackptr;
 }
 
 enum gkrtos_result gkrtos_init_systick_handler() {
