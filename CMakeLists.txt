@@ -41,6 +41,7 @@ set(SRC_FILES
         ${CMAKE_SOURCE_DIR}/src/gkrtos/structures/list.c
         ${CMAKE_SOURCE_DIR}/src/gkrtos/syscalls/syscalls.c
         ${CMAKE_SOURCE_DIR}/src/gkrtos/syscalls/syscalls_impl.c
+        ${CMAKE_SOURCE_DIR}/src/gkrtos/tasking/runner.c
         ${CMAKE_SOURCE_DIR}/src/gkrtos/tasking/tasking.c
 )
 

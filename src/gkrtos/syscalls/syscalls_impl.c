@@ -16,6 +16,7 @@
 #include "syscalls_impl.h"
 
 #include "gkrtos/misc/misc.h"
+#include "gkrtos/tasking/runner.h"
 #include "gkrtos/tasking/tasking.h"
 #include "pico/types.h"
 #include "syscalls.h"
@@ -24,6 +25,7 @@ void gkrtos_internal_syscall(struct gkrtos_tasking_task* task,
                              enum gkrtos_syscall syscall, void* args) {
   // Dispatch to correct function
   // TODO: Switch to function pointer array for faster operation
+  // or verify that it compiles to the same thing
   switch (syscall) {
     case GKRTOS_SYSCALL_SUICIDE:
       gkrtos_internal_syscall_suicide(task);
@@ -75,7 +77,7 @@ void gkrtos_internal_syscall_create_task(
   struct gkrtos_tasking_task* new_task =
       gkrtos_tasking_task_new(gkrtos_tasking_priority_user(args->priority));
   new_task->function = args->function;
-  new_task->stackptr =
-      gkrtos_internal_create_new_stack(args->stack_size, args->function);
+  new_task->stackptr = gkrtos_internal_create_new_stack(
+      args->stack_size, gkrtos_internal_task_runner);
   gkrtos_tasking_queue_task(new_task);
 }
