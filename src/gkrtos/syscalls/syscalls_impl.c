@@ -70,7 +70,9 @@ void gkrtos_internal_syscall_yield(struct gkrtos_tasking_task* task) {
 }
 
 void gkrtos_internal_syscall_sleep_until(struct gkrtos_tasking_task* task,
-                                         absolute_time_t* milliseconds) {}
+                                         absolute_time_t* milliseconds) {
+  // TODO: Implement
+}
 void gkrtos_internal_syscall_create_task(
     struct gkrtos_tasking_task* calling_task,
     struct gkrtos_syscall_create_task_args* args) {
