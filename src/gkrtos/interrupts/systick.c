@@ -29,7 +29,8 @@ gkrtos_stackptr_t gkrtos_systick_handler(gkrtos_stackptr_t stackptr) {
   uint64_t elapsed_task_time =
       current_time - current_task->accounting.ctx_switch_time;
   if (elapsed_task_time > GKRTOS_TASKING_TASK_ELAPSED_TIME_US) {
-    struct gkrtos_tasking_task* next_task = gkrtos_tasking_get_next_task();
+    struct gkrtos_tasking_task* next_task =
+        gkrtos_internal_tasking_get_next_task();
     gkrtos_internal_queue_context_switch(next_task);
   }
   return stackptr;

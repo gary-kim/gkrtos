@@ -15,6 +15,7 @@
 
 #include "syscalls_impl.h"
 
+#include "gkrtos/asm.h"
 #include "gkrtos/misc/misc.h"
 #include "gkrtos/tasking/runner.h"
 #include "gkrtos/tasking/tasking.h"
@@ -58,10 +59,11 @@ gkrtos_syscall_return_t gkrtos_internal_syscall_kill(
   dying_task->task_status = GKRTOS_TASKING_STATUS_COMPLETE;
 
   // Queue up the next task to start (since we are killing the current task)
-  struct gkrtos_tasking_task* next_task = gkrtos_tasking_get_next_task();
+  struct gkrtos_tasking_task* next_task =
+      gkrtos_internal_tasking_get_next_task();
 
   // Specifically delay actually dequeueing to make sure that the
-  // gkrtos_tasking_get_next_task gets the correct next task.
+  // gkrtos_internal_tasking_get_next_task gets the correct next task.
   gkrtos_tasking_dequeue_task(dying_task);
 
   gkrtos_internal_queue_context_switch(next_task);
@@ -70,14 +72,17 @@ gkrtos_syscall_return_t gkrtos_internal_syscall_kill(
 
 gkrtos_syscall_return_t gkrtos_internal_syscall_yield(
     struct gkrtos_tasking_task* task) {
-  struct gkrtos_tasking_task* next_task = gkrtos_tasking_get_next_task();
+  struct gkrtos_tasking_task* next_task =
+      gkrtos_internal_tasking_get_next_task();
   gkrtos_internal_queue_context_switch(next_task);
   return GKRTOS_SYSCALL_ERRNO_SUCCESS;
 }
 
 gkrtos_syscall_return_t gkrtos_internal_syscall_sleep_until(
     struct gkrtos_tasking_task* task, absolute_time_t* milliseconds) {
-  // TODO: Implement
+  struct gkrtos_tasking_task* next_task =
+      gkrtos_internal_tasking_sleep_until(task, *milliseconds);
+  gkrtos_internal_queue_context_switch(next_task);
   return GKRTOS_SYSCALL_ERRNO_SUCCESS;
 }
 gkrtos_syscall_return_t gkrtos_internal_syscall_create_task(
@@ -86,8 +91,9 @@ gkrtos_syscall_return_t gkrtos_internal_syscall_create_task(
   struct gkrtos_tasking_task* new_task =
       gkrtos_tasking_task_new(gkrtos_tasking_priority_user(args->priority));
   new_task->function = args->function;
-  new_task->stackptr = gkrtos_internal_create_new_stack(
-      args->stack_size, gkrtos_internal_task_runner);
+  new_task->stackptr =
+      gkrtos_internal_stack_init(args->stack_base, new_task->function);
+  new_task->stackbase = args->stack_base;
   gkrtos_tasking_queue_task(new_task);
   return new_task->pid;
 }

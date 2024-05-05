@@ -85,7 +85,7 @@ struct gkrtos_tasking_task {
   // be set to the time at which it must be run. Then, on the systick before
   // this time is reached, the task will be context switched to.
   // TODO: Actually set this up
-  uint64_t next_run_time;
+  absolute_time_t next_run_time;
 
   struct {
     uint64_t ctx_switch_time;
@@ -108,9 +108,6 @@ gkrtos_stackptr_t gkrtos_internal_context_switch(
     struct gkrtos_tasking_task* current_task,
     struct gkrtos_tasking_task* next_task, gkrtos_stackptr_t current_task_sp);
 
-gkrtos_stackptr_t gkrtos_internal_create_new_stack(
-    size_t stack_size, gkrtos_tasking_function_t fn_ptr);
-
 enum gkrtos_result gkrtos_internal_tasking_init();
 
 // ===========================
@@ -123,11 +120,16 @@ struct gkrtos_tasking_task* gkrtos_tasking_task_new(
 enum gkrtos_tasking_priority gkrtos_tasking_priority_user(uint8_t priority);
 
 // Requires OS Spinlock
-struct gkrtos_tasking_task* gkrtos_tasking_get_next_task();
+struct gkrtos_tasking_task* gkrtos_internal_tasking_get_next_task();
 
 // Requires OS Spinlock
 struct gkrtos_tasking_task* gkrtos_internal_queue_context_switch(
     struct gkrtos_tasking_task* task);
+
+// Requires OS Spinlock
+// Returns: Next task to schedule
+struct gkrtos_tasking_task* gkrtos_internal_tasking_sleep_until(
+    struct gkrtos_tasking_task* task, absolute_time_t milliseconds);
 
 inline struct gkrtos_tasking_core* gkrtos_tasking_get_current_core() {
   uint32_t core_id = gkrtos_get_cpuid();

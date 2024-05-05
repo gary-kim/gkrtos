@@ -84,7 +84,24 @@ gkrtos_stackptr_t gkrtos_internal_context_switch(
 }
 
 // Requires OS Spinlock
-struct gkrtos_tasking_task* gkrtos_tasking_get_next_task() {
+// Returns: Next task to schedule
+struct gkrtos_tasking_task* gkrtos_internal_tasking_sleep_until(
+    struct gkrtos_tasking_task* task, absolute_time_t milliseconds) {
+  gkrtos_critical_section_data_structures_enter_blocking();
+  // BEGIN CRITICAL REGION
+
+  task->next_run_time = milliseconds;
+  gkrtos_list_rotate(gkrtos_tasking_queue);
+  struct gkrtos_tasking_task* new_task =
+      gkrtos_list_get_head(gkrtos_tasking_queue);
+
+  // END CRITICAL REGION
+  gkrtos_critical_section_data_structures_exit();
+  return new_task;
+}
+
+// Requires OS Spinlock
+struct gkrtos_tasking_task* gkrtos_internal_tasking_get_next_task() {
   gkrtos_critical_section_data_structures_enter_blocking();
   // BEGIN CRITICAL SECTION
 
@@ -113,21 +130,6 @@ struct gkrtos_tasking_task* gkrtos_internal_queue_context_switch(
 }
 
 // Requires OS Spinlock
-gkrtos_stackptr_t gkrtos_internal_create_new_stack(
-    size_t stack_size, gkrtos_tasking_function_t fn_ptr) {
-  gkrtos_critical_section_data_structures_enter_blocking();
-  // BEGIN CRITICAL REGION
-
-  // TODO: Check if going to the end of the stack is really necessary
-  gkrtos_stackptr_t stackptr =
-      malloc(stack_size) + stack_size -
-      1;  // NOLINT(*-misplaced-pointer-arithmetic-in-alloc)
-  gkrtos_internal_stack_init(stackptr, fn_ptr);
-
-  // END CRITICAL REGION
-  gkrtos_critical_section_data_structures_exit();
-  return stackptr;
-}
 enum gkrtos_result gkrtos_internal_tasking_init() {
   gkrtos_tasking_queue = gkrtos_list_new();
   return GKRTOS_RESULT_SUCCESS;

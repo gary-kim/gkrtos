@@ -18,5 +18,10 @@
 
 // Defines for user programs to override pico-sdk
 #define sync_internal_yield_until_before(until) gkrtos_syscall_sleep_for(until);
+#define GKRTOS_STACK_SETUP(NAME, BLOCKS)         \
+  void* GKRTOS_USER_STACK_##NAME[4096 * BLOCKS]; \
+  void* NAME = GKRTOS_USER_STACK_##NAME + (4096 * BLOCKS - 1)
+
+enum gkrtos_result gkrtos_init();
 
 #endif
