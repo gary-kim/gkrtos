@@ -5,6 +5,7 @@
 * Project Home: [https://sr.ht/~gary-kim/gkrtos](https://sr.ht/~gary-kim/gkrtos)
 * Source Code: [https://git.sr.ht/~gary-kim/gkrtos](https://git.sr.ht/~gary-kim/gkrtos)
 * Development Mailing List: [https://lists.sr.ht/~gary-kim/public-inbox](https://lists.sr.ht/~gary-kim/public-inbox) ([~gary-kim/public-inbox@lists.sr.ht](mailto:~gary-kim/public-inbox@lists.sr.ht))
+* TODO: [https://todo.sr.ht/~gary-kim/gkrtos](https://todo.sr.ht/~gary-kim/gkrtos)
 
 ### Building
 
