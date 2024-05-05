@@ -23,7 +23,7 @@ cd "$SCRIPTPATH/.."
 
 # Configure Mailing List
 git config format.subjectPrefix "PATCH gkrtos"
-git config sendemail.to '~gary-kim/gkrtos-private@lists.sr.ht'
+git config sendemail.to '~gary-kim/public-inbox@lists.sr.ht'
 
 # Git Notes
 git config format.notes true
