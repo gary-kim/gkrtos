@@ -18,7 +18,11 @@
 
 #include "gkrtos/misc/misc.h"
 #include "gkrtos/syscalls/syscalls.h"
+#include "gkrtos/syscalls/syscalls_impl.h"
 #include "gkrtos/tasking/tasking.h"
+
+// The stackptr to which gkrtos_isr_svcall should restore context from.
+extern gkrtos_stackptr_t gkrtos_svcall_stackptr;
 
 // Initialize a new stack for a task
 void gkrtos_internal_stack_init(gkrtos_stackptr_t stackptr,
@@ -34,6 +38,6 @@ void gkrtos_isr_svcall();
 void gkrtos_isr_systick();
 
 // Trigger SVCALL interrupt
-void gkrtos_trigger_svcall(enum gkrtos_syscall, void* args);
+gkrtos_syscall_return_t gkrtos_trigger_svcall(enum gkrtos_syscall, void* args);
 
 #endif

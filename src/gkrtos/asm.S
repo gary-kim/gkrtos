@@ -58,10 +58,13 @@ gkrtos_isr_systick:
 gkrtos_isr_svcall:
     push {lr}
     CONTEXT_SAVE r0
-    ldr r1, [r0, #32]	/* 1st argument (r0 on psp) */
-    ldr r2, [r0, #36]	/* 2nd argument (r1 on psp) */
-    bl gkrtos_syvcall_handler
-    CONTEXT_RESTORE r0
+    ldr r1, [r0, #32]	// 1st argument (r0 on psp)
+    ldr r2, [r0, #36]	// 2nd argument (r1 on psp)
+    bl gkrtos_svcall_handler
+    ldr r1, =gkrtos_svcall_stackptr
+    ldr r1, [r1]
+    str r0, [r1, #32]   // return type [r0 on psp]
+    CONTEXT_RESTORE r1
     pop {pc}
 
     .thumb_func

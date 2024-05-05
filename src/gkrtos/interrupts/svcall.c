@@ -18,14 +18,19 @@
 #include "gkrtos/asm.h"
 #include "gkrtos/hardware/rp2040.h"
 #include "gkrtos/syscalls/syscalls.h"
+#include "gkrtos/syscalls/syscalls_impl.h"
 #include "hardware/exception.h"
 #include "rp2040/rp2040_defs.h"
 
-gkrtos_stackptr_t gkrtos_svcall_handler(gkrtos_stackptr_t stackptr,
-                                        enum gkrtos_syscall syscall_number,
-                                        void* args) {
-  gkrtos_syscall(syscall_number, args);
-  return stackptr;
+gkrtos_stackptr_t gkrtos_svcall_stackptr;
+
+gkrtos_syscall_return_t gkrtos_svcall_handler(
+    gkrtos_stackptr_t stackptr, enum gkrtos_syscall syscall_number,
+    void* args) {
+  gkrtos_syscall_return_t tr =
+      gkrtos_internal_syscall(stackptr, syscall_number, args);
+  gkrtos_svcall_stackptr = stackptr;
+  return tr;
 }
 
 enum gkrtos_result gkrtos_init_svcall_handler() {

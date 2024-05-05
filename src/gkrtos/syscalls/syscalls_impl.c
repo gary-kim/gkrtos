@@ -21,36 +21,38 @@
 #include "pico/types.h"
 #include "syscalls.h"
 
-void gkrtos_internal_syscall(struct gkrtos_tasking_task* task,
-                             enum gkrtos_syscall syscall, void* args) {
+gkrtos_syscall_return_t gkrtos_internal_syscall(
+    struct gkrtos_tasking_task* task, enum gkrtos_syscall syscall, void* args) {
   // Dispatch to correct function
   // TODO: Switch to function pointer array for faster operation
   // or verify that it compiles to the same thing
   switch (syscall) {
     case GKRTOS_SYSCALL_SUICIDE:
-      gkrtos_internal_syscall_suicide(task);
+      return gkrtos_internal_syscall_suicide(task);
       break;
     case GKRTOS_SYSCALL_YIELD:
-      gkrtos_internal_syscall_yield(task);
+      return gkrtos_internal_syscall_yield(task);
       break;
     case GKRTOS_SYSCALL_KILL:
-      gkrtos_internal_syscall_kill(task, (gkrtos_pid_t*)args);
+      return gkrtos_internal_syscall_kill(task, (gkrtos_pid_t*)args);
       break;
     case GKRTOS_SYSCALL_SLEEP_UNTIL:
-      gkrtos_internal_syscall_sleep_until(task, (absolute_time_t*)args);
+      return gkrtos_internal_syscall_sleep_until(task, (absolute_time_t*)args);
       break;
     case GKRTOS_SYSCALL_CREATE_TASK:
-      gkrtos_internal_syscall_create_task(
+      return gkrtos_internal_syscall_create_task(
           task, (struct gkrtos_syscall_create_task_args*)args);
   }
+  return -GKRTOS_SYSCALL_ERRNO_NO_SUCH_SYSCALL;
 }
 
-void gkrtos_internal_syscall_suicide(struct gkrtos_tasking_task* task) {
+gkrtos_syscall_return_t gkrtos_internal_syscall_suicide(
+    struct gkrtos_tasking_task* task) {
   gkrtos_internal_syscall_kill(task, &task->pid);
 }
 
-void gkrtos_internal_syscall_kill(const struct gkrtos_tasking_task* task,
-                                  const gkrtos_pid_t* pid) {
+gkrtos_syscall_return_t gkrtos_internal_syscall_kill(
+    const struct gkrtos_tasking_task* task, const gkrtos_pid_t* pid) {
   struct gkrtos_tasking_task* dying_task = &gkrtos_task_list[*pid];
   dying_task->task_status = GKRTOS_TASKING_STATUS_COMPLETE;
 
@@ -64,16 +66,17 @@ void gkrtos_internal_syscall_kill(const struct gkrtos_tasking_task* task,
   gkrtos_internal_queue_context_switch(next_task);
 }
 
-void gkrtos_internal_syscall_yield(struct gkrtos_tasking_task* task) {
+gkrtos_syscall_return_t gkrtos_internal_syscall_yield(
+    struct gkrtos_tasking_task* task) {
   struct gkrtos_tasking_task* next_task = gkrtos_tasking_get_next_task();
   gkrtos_internal_queue_context_switch(next_task);
 }
 
-void gkrtos_internal_syscall_sleep_until(struct gkrtos_tasking_task* task,
-                                         absolute_time_t* milliseconds) {
+gkrtos_syscall_return_t gkrtos_internal_syscall_sleep_until(
+    struct gkrtos_tasking_task* task, absolute_time_t* milliseconds) {
   // TODO: Implement
 }
-void gkrtos_internal_syscall_create_task(
+gkrtos_syscall_return_t gkrtos_internal_syscall_create_task(
     struct gkrtos_tasking_task* calling_task,
     struct gkrtos_syscall_create_task_args* args) {
   struct gkrtos_tasking_task* new_task =

@@ -22,6 +22,10 @@
 #include "gkrtos/tasking/tasking.h"
 #include "pico/types.h"
 
+// gkrtos_syscall_return_t is the return type of syscalls. It will be placed
+// in r0 on returning from syscalls
+typedef uint32_t gkrtos_syscall_return_t;
+
 // enum gkrtos_sycall is effectively the syscall number table. For readability,
 // easier non-C implementation support, and stability, all enum values will be
 // numbered in this table.
@@ -33,6 +37,14 @@ enum gkrtos_syscall {
   GKRTOS_SYSCALL_CREATE_TASK = 4,
 };
 
+enum gkrtos_syscall_errno {
+  GKRTOS_SYSCALL_ERRNO_SUCCESS = 0,
+  GKRTOS_SYSCALL_ERRNO_FAILED = 1,
+  GKRTOS_SYSCALL_ERRNO_PID_DOES_NOT_EXIST = 2,
+  GKRTOS_SYSCALL_ERRNO_MAX_REACHED = 4,
+  GKRTOS_SYSCALL_ERRNO_NO_SUCH_SYSCALL = 5,
+};
+
 struct gkrtos_syscall_create_task_args {
   enum gkrtos_tasking_priority priority;
   gkrtos_tasking_function_t function;
@@ -40,11 +52,13 @@ struct gkrtos_syscall_create_task_args {
   uint32_t run_frequency;
 };
 
-void gkrtos_syscall(enum gkrtos_syscall syscall, void* args);
-void gkrtos_syscall_suicide();
-void gkrtos_syscall_kill(gkrtos_pid_t pid);
-void gkrtos_syscall_yield();
-void gkrtos_syscall_sleep_until(absolute_time_t milliseconds);
-void gkrtos_syscall_create_task(struct gkrtos_syscall_create_task_args* args);
+gkrtos_syscall_return_t gkrtos_syscall(enum gkrtos_syscall syscall, void* args);
+gkrtos_syscall_return_t gkrtos_syscall_suicide();
+gkrtos_syscall_return_t gkrtos_syscall_kill(gkrtos_pid_t pid);
+gkrtos_syscall_return_t gkrtos_syscall_yield();
+gkrtos_syscall_return_t gkrtos_syscall_sleep_until(
+    absolute_time_t milliseconds);
+gkrtos_syscall_return_t gkrtos_syscall_create_task(
+    struct gkrtos_syscall_create_task_args* args);
 
 #endif
