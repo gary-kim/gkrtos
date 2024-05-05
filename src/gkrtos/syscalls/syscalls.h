@@ -38,6 +38,7 @@ enum gkrtos_syscall {
 };
 
 enum gkrtos_syscall_errno {
+  // It is important that GKRTOS_SYSCALL_ERRNO_SUCCESS is 0
   GKRTOS_SYSCALL_ERRNO_SUCCESS = 0,
   GKRTOS_SYSCALL_ERRNO_FAILED = 1,
   GKRTOS_SYSCALL_ERRNO_PID_DOES_NOT_EXIST = 2,
@@ -58,7 +59,7 @@ gkrtos_syscall_return_t gkrtos_syscall_kill(gkrtos_pid_t pid);
 gkrtos_syscall_return_t gkrtos_syscall_yield();
 gkrtos_syscall_return_t gkrtos_syscall_sleep_until(
     absolute_time_t milliseconds);
-gkrtos_syscall_return_t gkrtos_syscall_create_task(
+gkrtos_pid_t gkrtos_syscall_create_task(
     struct gkrtos_syscall_create_task_args* args);
 
 #endif
