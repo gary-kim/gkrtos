@@ -158,4 +158,5 @@ enum gkrtos_result gkrtos_tasking_dequeue_task(
 
   // END CRITICAL SECTION
   gkrtos_critical_section_data_structures_exit();
+  return GKRTOS_RESULT_SUCCESS;
 }

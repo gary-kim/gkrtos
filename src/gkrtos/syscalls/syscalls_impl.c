@@ -49,6 +49,7 @@ gkrtos_syscall_return_t gkrtos_internal_syscall(
 gkrtos_syscall_return_t gkrtos_internal_syscall_suicide(
     struct gkrtos_tasking_task* task) {
   gkrtos_internal_syscall_kill(task, &task->pid);
+  return GKRTOS_SYSCALL_ERRNO_SUCCESS;
 }
 
 gkrtos_syscall_return_t gkrtos_internal_syscall_kill(
@@ -64,17 +65,20 @@ gkrtos_syscall_return_t gkrtos_internal_syscall_kill(
   gkrtos_tasking_dequeue_task(dying_task);
 
   gkrtos_internal_queue_context_switch(next_task);
+  return GKRTOS_SYSCALL_ERRNO_SUCCESS;
 }
 
 gkrtos_syscall_return_t gkrtos_internal_syscall_yield(
     struct gkrtos_tasking_task* task) {
   struct gkrtos_tasking_task* next_task = gkrtos_tasking_get_next_task();
   gkrtos_internal_queue_context_switch(next_task);
+  return GKRTOS_SYSCALL_ERRNO_SUCCESS;
 }
 
 gkrtos_syscall_return_t gkrtos_internal_syscall_sleep_until(
     struct gkrtos_tasking_task* task, absolute_time_t* milliseconds) {
   // TODO: Implement
+  return GKRTOS_SYSCALL_ERRNO_SUCCESS;
 }
 gkrtos_syscall_return_t gkrtos_internal_syscall_create_task(
     struct gkrtos_tasking_task* calling_task,
@@ -85,4 +89,5 @@ gkrtos_syscall_return_t gkrtos_internal_syscall_create_task(
   new_task->stackptr = gkrtos_internal_create_new_stack(
       args->stack_size, gkrtos_internal_task_runner);
   gkrtos_tasking_queue_task(new_task);
+  return new_task->pid;
 }
