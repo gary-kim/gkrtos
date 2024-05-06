@@ -22,6 +22,12 @@
   void* GKRTOS_USER_STACK_##NAME[4096 * BLOCKS]; \
   void* NAME = GKRTOS_USER_STACK_##NAME + (4096 * BLOCKS - 1)
 
+// =========================
+// == OS Public Functions ==
+// =========================
+
 enum gkrtos_result gkrtos_init();
+
+enum gkrtos_result gkrtos_start();
 
 #endif

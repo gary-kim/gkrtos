@@ -48,6 +48,33 @@ struct gkrtos_list* gkrtos_list_append(struct gkrtos_list* list,
   return list;
 }
 
+// Expects a sort_fn with the following signature:
+// int sort_fn(void* raw_item, void* previous, void* next);
+struct gkrtos_list* gkrtos_list_insert_sorted(struct gkrtos_list* list,
+                                              void* raw_item,
+                                              int (*sort_fn)(void*, void*,
+                                                             void*)) {
+  if (list->length <= 1) {
+    return gkrtos_list_append(list, raw_item);
+  }
+  struct gkrtos_list_item* previous = list->head;
+  if (!sort_fn(raw_item, previous, previous->next)) {
+    previous = previous->next;
+  }
+
+  // Append item to list behind previous
+  struct gkrtos_list_item* new_item = gkrtos_list_item_new();
+  new_item->data = raw_item;
+  new_item->next = previous->next;
+  new_item->prev = previous;
+  if (previous == list->tail) {
+    list->tail = new_item;
+  }
+  previous->next = new_item;
+  new_item->next->prev = new_item;
+  return list;
+}
+
 struct gkrtos_list* gkrtos_list_prepend(struct gkrtos_list* list,
                                         void* raw_item) {
   struct gkrtos_list_item* item = gkrtos_list_item_new();

@@ -25,7 +25,7 @@
 #include "hardware/exception.h"
 
 struct gkrtos_tasking_task gkrtos_task_list[GKRTOS_CONFIG_MAX_TASKS];
-struct gkrtos_tasking_core gkrtos_tasking_core[GKRTOS_ARCH_NUM_CORES];
+struct gkrtos_tasking_core gkrtos_tasking_cores[GKRTOS_ARCH_NUM_CORES];
 struct gkrtos_list* gkrtos_tasking_queue;
 
 // Requires OS Spinlock
