@@ -27,14 +27,15 @@ gkrtos_stackptr_t gkrtos_svcall_stackptr;
 gkrtos_syscall_return_t gkrtos_svcall_handler(
     gkrtos_stackptr_t stackptr, enum gkrtos_syscall syscall_number,
     void* args) {
-  gkrtos_syscall_return_t tr =
-      gkrtos_internal_syscall(stackptr, syscall_number, args);
+  gkrtos_syscall_return_t tr = gkrtos_internal_syscall(
+      gkrtos_tasking_get_current_task(), syscall_number, args);
   gkrtos_svcall_stackptr = stackptr;
   return tr;
 }
 
 enum gkrtos_result gkrtos_init_svcall_handler() {
-  exception_set_exclusive_handler(SVCALL_EXCEPTION, gkrtos_isr_svcall);
+  // Just using isr_svcall
+  //  exception_set_exclusive_handler(SVCALL_EXCEPTION, gkrtos_isr_svcall);
 
   // Set system handler priority
   gkrtos_set_register(M0PLUS_SHPR2_OFFSET, M0PLUS_SHPR2_PRI_11_BITS,

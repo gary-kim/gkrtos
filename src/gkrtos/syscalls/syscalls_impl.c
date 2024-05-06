@@ -85,6 +85,7 @@ gkrtos_syscall_return_t gkrtos_internal_syscall_sleep_until(
   gkrtos_internal_queue_context_switch(next_task);
   return GKRTOS_SYSCALL_ERRNO_SUCCESS;
 }
+
 gkrtos_syscall_return_t gkrtos_internal_syscall_create_task(
     struct gkrtos_tasking_task* calling_task,
     struct gkrtos_syscall_create_task_args* args) {

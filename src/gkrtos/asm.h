@@ -29,15 +29,18 @@ gkrtos_stackptr_t gkrtos_internal_stack_init(gkrtos_stackptr_t stackptr,
                                              gkrtos_tasking_function_t fn_ptr);
 
 // PENDSV interrupt handler
-void gkrtos_pendsv_context_switch();
+void isr_pendsv();
 
 // SVCALL interrupt handler
-void gkrtos_isr_svcall();
+void isr_svcall();
 
 // Systick interrupt handler
-void gkrtos_isr_systick();
+void isr_systick();
 
 // Trigger SVCALL interrupt
 gkrtos_syscall_return_t gkrtos_trigger_svcall(enum gkrtos_syscall, void* args);
+
+// Start tasking
+void gkrtos_internal_begin_tasking(gkrtos_stackptr_t stackptr);
 
 #endif

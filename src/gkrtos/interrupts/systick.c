@@ -33,7 +33,8 @@ gkrtos_stackptr_t gkrtos_systick_handler(gkrtos_stackptr_t stackptr) {
 }
 
 enum gkrtos_result gkrtos_init_systick_handler() {
-  exception_set_exclusive_handler(SYSTICK_EXCEPTION, gkrtos_isr_systick);
+  // Just using isr_systick
+  //  exception_set_exclusive_handler(SYSTICK_EXCEPTION, gkrtos_isr_systick);
   // Documented here:
   // https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf#tab-registerlist_m0plus
   systick_hw->csr = ((0x1) |       // ENABLE: enable

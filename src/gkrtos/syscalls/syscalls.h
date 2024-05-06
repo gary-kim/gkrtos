@@ -22,6 +22,8 @@
 #include "gkrtos/tasking/tasking.h"
 #include "pico/types.h"
 
+extern bool gkrtos_tasking_started;
+
 // gkrtos_syscall_return_t is the return type of syscalls. It will be placed
 // in r0 on returning from syscalls
 typedef uint32_t gkrtos_syscall_return_t;

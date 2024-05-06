@@ -43,9 +43,9 @@
     .endm
 
     .thumb_func
-    .type gkrtos_isr_systick, %function
-    .global gkrtos_isr_systick
-gkrtos_isr_systick:
+    .type isr_systick, %function
+    .global isr_systick
+isr_systick:
     push {lr}
     CONTEXT_SAVE r0
     bl gkrtos_systick_handler
@@ -53,9 +53,9 @@ gkrtos_isr_systick:
     pop {pc}
 
     .thumb_func
-    .type gkrtos_isr_svcall, %function
-    .global gkrtos_isr_svcall
-gkrtos_isr_svcall:
+    .type isr_svcall, %function
+    .global isr_svcall
+isr_svcall:
     push {lr}
     CONTEXT_SAVE r0
     ldr r1, [r0, #32]	// 1st argument (r0 on psp)
@@ -79,14 +79,48 @@ gkrtos_trigger_svcall:
     .type gkrtos_internal_stack_init, %function
     .global gkrtos_internal_stack_init
 gkrtos_internal_stack_init:
-    push {r1}
+    push {r4-r7, lr}
+
+    subs r0, r0, #32
+    movs r4, #0
+    movs r5, #0
+    movs r6, #0
+    movs r7, #0
+    stmia r0!, {r4-r7}
+    mov r4, r12
+    mov r5, lr
+    mov r6, r1
+    ldr r7, =0x1000000
+
+    stmia r0!, {r4-r7}
+    subs r0, r0, #32
+    msr psp, r0
     CONTEXT_SAVE r0
-    bx lr
+
+    pop {r4-r7, pc}
 
     .thumb_func
-    .type gkrtos_pendsv_context_switch, %function
-    .global gkrtos_pendsv_context_switch
-gkrtos_pendsv_context_switch:
+    .type gkrtos_internal_begin_tasking, %function
+    .global gkrtos_internal_begin_tasking
+gkrtos_internal_begin_tasking:
+    CONTEXT_RESTORE r0
+
+    // Switch to psp stack
+    movs r0, #2
+    msr CONTROL, r0
+    isb
+
+    // pop hardware saved registers
+    pop {r0-r7}
+    mov r12, r4
+    mov lr, r5
+
+    bx r6
+
+    .thumb_func
+    .type isr_pendsv, %function
+    .global isr_pendsv
+isr_pendsv:
     push {lr}
     CONTEXT_SAVE r0
 

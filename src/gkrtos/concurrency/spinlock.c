@@ -29,5 +29,7 @@ enum gkrtos_result gkrtos_critical_section_init() {
                                       GKRTOS_SPINLOCK_ID_OS1);
   critical_section_init_with_lock_num(&critical_section_os_data_structures,
                                       GKRTOS_SPINLOCK_ID_OS2);
+  critical_section_exit(&critical_section_os1);
+  critical_section_exit(&critical_section_os_data_structures);
   return GKRTOS_RESULT_SUCCESS;
 }

@@ -48,8 +48,9 @@ gkrtos_stackptr_t gkrtos_pendsv_handler_c(gkrtos_stackptr_t stackptr) {
 }
 
 enum gkrtos_result gkrtos_init_pendsv_handler() {
-  exception_set_exclusive_handler(PENDSV_EXCEPTION,
-                                  gkrtos_pendsv_context_switch);
+  // Just using isr_pendsv
+  //  exception_set_exclusive_handler(PENDSV_EXCEPTION,
+  //                                  gkrtos_pendsv_context_switch);
 
   gkrtos_set_register(M0PLUS_SHPR3_OFFSET, M0PLUS_SHPR3_PRI_14_BITS,
                       M0PLUS_SHPR3_PRI_14_LSB, GKRTOS_PENDSV_PRIORITY);

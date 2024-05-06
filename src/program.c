@@ -29,6 +29,8 @@ void blink() {
 }
 
 int main() {
+  gkrtos_init();
+
   struct gkrtos_syscall_create_task_args task1_args = {
       .priority = GKRTOS_TASKING_PRIORITY_USER,
       .function = blink,
@@ -38,6 +40,5 @@ int main() {
   gpio_init(PICO_DEFAULT_LED_PIN);
   gpio_set_dir(PICO_DEFAULT_LED_PIN, GPIO_OUT);
   gpio_put(PICO_DEFAULT_LED_PIN, 1);
-  gkrtos_init();
   gkrtos_start();
 }

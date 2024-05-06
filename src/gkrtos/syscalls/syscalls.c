@@ -20,8 +20,14 @@
 #include "gkrtos/asm.h"
 #include "gkrtos/misc/misc.h"
 
+bool gkrtos_tasking_started = false;
+
 gkrtos_syscall_return_t gkrtos_syscall(enum gkrtos_syscall syscall,
                                        void* args) {
+  if (!gkrtos_tasking_started) {
+    return gkrtos_internal_syscall(gkrtos_tasking_get_current_task(), syscall,
+                                   args);
+  }
   return gkrtos_trigger_svcall(syscall, args);
 }
 
