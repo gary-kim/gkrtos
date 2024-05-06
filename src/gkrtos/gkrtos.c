@@ -38,9 +38,3 @@ enum gkrtos_result gkrtos_start() {
   }
   return GKRTOS_RESULT_ERROR;
 }
-
-int main() {
-  setup_default_uart();
-  printf("Hello, world!\n");
-  return 0;
-}

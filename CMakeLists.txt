@@ -45,6 +45,8 @@ set(SRC_FILES
         ${CMAKE_SOURCE_DIR}/src/gkrtos/syscalls/syscalls_impl.c
         ${CMAKE_SOURCE_DIR}/src/gkrtos/tasking/runner.c
         ${CMAKE_SOURCE_DIR}/src/gkrtos/tasking/tasking.c
+
+        ${CMAKE_SOURCE_DIR}/src/program.c
 )
 
 add_executable(gkrtos
