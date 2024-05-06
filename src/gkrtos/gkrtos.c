@@ -26,7 +26,7 @@
 #include "hardware/exception.h"
 #include "pico/stdlib.h"
 
-GKRTOS_STACK_SETUP(spin_task_stack, 1);
+GKRTOS_STACK_SETUP(spin_task_stack, 4);
 
 enum gkrtos_result gkrtos_init() {
   if (!(gkrtos_critical_section_init() == GKRTOS_RESULT_SUCCESS &&
@@ -51,7 +51,7 @@ enum gkrtos_result gkrtos_start() {
     // Force the first task to run
     gkrtos_tasking_cores[0].queued_task = 1;
     gkrtos_tasking_cores[0].currently_running_pid = 1;
-    gkrtos_task_list[1].task_status = 1;
+    gkrtos_task_list[1].task_status = GKRTOS_TASKING_STATUS_RUNNING;
     gkrtos_task_list[1].accounting.ctx_switch_time = get_absolute_time();
 
     // The next line should never return at this point

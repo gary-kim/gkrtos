@@ -18,13 +18,14 @@
 #include "gkrtos/tasking/tasking.h"
 #include "pico/stdlib.h"
 
-GKRTOS_STACK_SETUP(blink_stack, 2);
+GKRTOS_STACK_SETUP(blink_stack, 4);
 void blink() {
   while (true) {
     gpio_put(PICO_DEFAULT_LED_PIN, 0);
-    gkrtos_syscall_sleep_until(delayed_by_us(get_absolute_time(), 100000));
+    gkrtos_syscall_sleep_until(make_timeout_time_ms(1000));
+
     gpio_put(PICO_DEFAULT_LED_PIN, 1);
-    gkrtos_syscall_sleep_until(delayed_by_us(get_absolute_time(), 100000));
+    gkrtos_syscall_sleep_until(make_timeout_time_ms(1000));
   }
 }
 
@@ -36,6 +37,8 @@ int main() {
       .function = blink,
       .stack_base = blink_stack};
   gkrtos_syscall_create_task(&task1_args);
+
+  stdio_init_all();
 
   gpio_init(PICO_DEFAULT_LED_PIN);
   gpio_set_dir(PICO_DEFAULT_LED_PIN, GPIO_OUT);

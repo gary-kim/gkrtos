@@ -117,7 +117,7 @@ enum gkrtos_result gkrtos_internal_tasking_init();
 
 static inline bool gkrtos_internal_tasking_is_scheduled_task(
     struct gkrtos_tasking_task* task) {
-  return is_at_the_end_of_time(task->next_run_time);
+  return !is_nil_time(task->next_run_time);
 }
 
 struct gkrtos_tasking_task* gkrtos_tasking_task_new(

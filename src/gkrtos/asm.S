@@ -64,7 +64,8 @@ isr_svcall:
     ldr r1, =gkrtos_svcall_stackptr
     ldr r1, [r1]
     str r0, [r1, #32]   // return type [r0 on psp]
-    CONTEXT_RESTORE r1
+    mov r0, r1
+    CONTEXT_RESTORE r0
     pop {pc}
 
     .thumb_func
@@ -73,7 +74,10 @@ isr_svcall:
 gkrtos_trigger_svcall:
     push {lr}
     svc #0
-    pop {pc}
+    pop {r0}
+    mov lr, r0
+    cpsie i
+    bx lr
 
     .thumb_func
     .type gkrtos_internal_stack_init, %function
@@ -127,6 +131,7 @@ isr_pendsv:
     bl gkrtos_pendsv_handler_c
 
     CONTEXT_RESTORE r0
+    dsb
     pop {pc}
 
 // vim:ft=nasm

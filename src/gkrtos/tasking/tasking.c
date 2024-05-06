@@ -21,6 +21,7 @@
 #include "gkrtos/asm.h"
 #include "gkrtos/concurrency/private_spinlock.h"
 #include "gkrtos/config.h"
+#include "gkrtos/interrupts/pendsv.h"
 #include "gkrtos/structures/list.h"
 #include "hardware/exception.h"
 
@@ -117,10 +118,11 @@ static inline bool gkrtos_internal_tasking_rescheduling_required_locked() {
       make_timeout_time_us(to_us_since_boot(gkrtos_get_systick_period()));
   // Is the next scheduled task expecting to be rescheduled within the next
   // systick period?
-  if (absolute_time_diff_us(((struct gkrtos_tasking_task*)gkrtos_list_get_head(
+  if (!gkrtos_list_is_empty(gkrtos_tasking_scheduled_queue) &&
+      absolute_time_diff_us(((struct gkrtos_tasking_task*)gkrtos_list_get_head(
                                  gkrtos_tasking_scheduled_queue))
                                 ->next_run_time,
-                            next_systick) <= 0) {
+                            next_systick) > 0) {
     // A scheduled task expects to be on the core soon.
     return true;
   }
@@ -134,7 +136,8 @@ gkrtos_internal_tasking_get_next_task_locked() {
   // systick period?
   absolute_time_t next_systick =
       make_timeout_time_us(to_us_since_boot(gkrtos_get_systick_period()));
-  if (absolute_time_diff_us(((struct gkrtos_tasking_task*)gkrtos_list_get_head(
+  if (gkrtos_list_is_empty(gkrtos_tasking_scheduled_queue) ||
+      absolute_time_diff_us(((struct gkrtos_tasking_task*)gkrtos_list_get_head(
                                  gkrtos_tasking_scheduled_queue))
                                 ->next_run_time,
                             next_systick) <= 0) {
@@ -223,7 +226,9 @@ struct gkrtos_tasking_task* gkrtos_internal_queue_context_switch(
 
   struct gkrtos_tasking_core* current_core = gkrtos_tasking_get_current_core();
   current_core->queued_task = task->pid;
-  irq_set_pending(PENDSV_EXCEPTION);
+  if (current_core->currently_running_pid != task->pid) {
+    gkrtos_trigger_pendsv();
+  }
 
   // END CRITICAL SECTION
   gkrtos_critical_section_data_structures_exit();

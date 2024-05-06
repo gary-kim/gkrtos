@@ -24,7 +24,7 @@ enable_language(ASM)
 
 pico_sdk_init()
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror -Wall -ggdb")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror -Wall -ggdb -O0")
 
 set(INCLUDE_DIRS
         ${INCLUDE_DIRS}

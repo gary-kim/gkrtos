@@ -20,6 +20,12 @@
 #include "gkrtos/tasking/tasking.h"
 
 gkrtos_stackptr_t gkrtos_pendsv_handler_c(gkrtos_stackptr_t stackptr);
+
+// ======================
+// == OS Public Functions
+// ======================
+
 enum gkrtos_result gkrtos_init_pendsv_handler();
+enum gkrtos_result gkrtos_trigger_pendsv();
 
 #endif

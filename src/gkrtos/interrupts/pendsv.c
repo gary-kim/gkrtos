@@ -21,6 +21,7 @@
 #include "gkrtos/tasking/tasking.h"
 #include "hardware/exception.h"
 #include "hardware/regs/m0plus.h"
+#include "hardware/structs/scb.h"
 #include "rp2040/rp2040_defs.h"
 
 gkrtos_stackptr_t gkrtos_pendsv_handler_c(gkrtos_stackptr_t stackptr) {
@@ -55,5 +56,9 @@ enum gkrtos_result gkrtos_init_pendsv_handler() {
   gkrtos_set_register(M0PLUS_SHPR3_OFFSET, M0PLUS_SHPR3_PRI_14_BITS,
                       M0PLUS_SHPR3_PRI_14_LSB, GKRTOS_PENDSV_PRIORITY);
 
+  return GKRTOS_RESULT_SUCCESS;
+}
+enum gkrtos_result gkrtos_trigger_pendsv() {
+  scb_hw->icsr = 0x10000000;  // PendSV set-pending bit
   return GKRTOS_RESULT_SUCCESS;
 }

@@ -26,7 +26,6 @@ struct gkrtos_list_item {
 
 struct gkrtos_list {
   struct gkrtos_list_item *head;
-  struct gkrtos_list_item *tail;
   uint32_t length;
 };
 
@@ -41,6 +40,8 @@ struct gkrtos_list *gkrtos_list_prepend(struct gkrtos_list *list, void *item);
 
 struct gkrtos_list *gkrtos_list_remove(struct gkrtos_list *list,
                                        struct gkrtos_list_item *item);
+
+bool gkrtos_list_is_empty(struct gkrtos_list *list);
 
 struct gkrtos_list *gkrtos_list_new();
 
