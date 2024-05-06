@@ -88,7 +88,7 @@ struct gkrtos_tasking_task {
   absolute_time_t next_run_time;
 
   struct {
-    uint64_t ctx_switch_time;
+    absolute_time_t ctx_switch_time;
     uint64_t run_ticks;
   } accounting;
 };
@@ -100,7 +100,8 @@ struct gkrtos_tasking_core {
 
 extern struct gkrtos_tasking_task gkrtos_task_list[GKRTOS_CONFIG_MAX_TASKS];
 extern struct gkrtos_tasking_core gkrtos_tasking_cores[GKRTOS_ARCH_NUM_CORES];
-extern struct gkrtos_list* gkrtos_tasking_queue;
+extern struct gkrtos_list* gkrtos_tasking_unscheduled_queue;
+extern struct gkrtos_list* gkrtos_tasking_scheduled_queue;
 
 // IMPORTANT: Assumes called in a critical region
 gkrtos_stackptr_t gkrtos_internal_context_switch(
@@ -113,6 +114,11 @@ enum gkrtos_result gkrtos_internal_tasking_init();
 // ===========================
 // === OS Public Functions ===
 // ===========================
+
+static inline bool gkrtos_internal_tasking_is_scheduled_task(
+    struct gkrtos_tasking_task* task) {
+  return is_at_the_end_of_time(task->next_run_time);
+}
 
 struct gkrtos_tasking_task* gkrtos_tasking_task_new(
     enum gkrtos_tasking_priority priority);
@@ -131,12 +137,12 @@ struct gkrtos_tasking_task* gkrtos_internal_queue_context_switch(
 struct gkrtos_tasking_task* gkrtos_internal_tasking_sleep_until(
     struct gkrtos_tasking_task* task, absolute_time_t milliseconds);
 
-inline struct gkrtos_tasking_core* gkrtos_tasking_get_current_core() {
+static inline struct gkrtos_tasking_core* gkrtos_tasking_get_current_core() {
   uint32_t core_id = gkrtos_get_cpuid();
   return &gkrtos_tasking_cores[core_id];
 }
 
-inline struct gkrtos_tasking_task* gkrtos_tasking_get_current_task() {
+static inline struct gkrtos_tasking_task* gkrtos_tasking_get_current_task() {
   return &gkrtos_task_list[gkrtos_tasking_get_current_core()
                                ->currently_running_pid];
 }
@@ -145,5 +151,9 @@ enum gkrtos_result gkrtos_tasking_queue_task(struct gkrtos_tasking_task* task);
 
 enum gkrtos_result gkrtos_tasking_dequeue_task(
     struct gkrtos_tasking_task* task);
+
+// Requires OS Lock
+// Returns: whether a reschedule must occur
+bool gkrtos_tasking_reschedule_required();
 
 #endif

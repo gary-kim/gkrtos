@@ -24,11 +24,7 @@
 #include "rp2040/rp2040_defs.h"
 
 gkrtos_stackptr_t gkrtos_systick_handler(gkrtos_stackptr_t stackptr) {
-  uint64_t current_time = time_us_64();
-  struct gkrtos_tasking_task* current_task = gkrtos_tasking_get_current_task();
-  uint64_t elapsed_task_time =
-      current_time - current_task->accounting.ctx_switch_time;
-  if (elapsed_task_time > GKRTOS_TASKING_TASK_ELAPSED_TIME_US) {
+  if (gkrtos_tasking_reschedule_required()) {
     struct gkrtos_tasking_task* next_task =
         gkrtos_internal_tasking_get_next_task();
     gkrtos_internal_queue_context_switch(next_task);
@@ -48,7 +44,7 @@ enum gkrtos_result gkrtos_init_systick_handler() {
   // Make sure the value isn't so large that it can't be used
   assert(gkrtos_get_systick_rvr_value() < 0x00FFFFFF);
 
-  systick_hw->rvr = 0x00FFFFFF;
+  systick_hw->rvr = gkrtos_get_systick_rvr_value();
 
   // Set system handler priority
   gkrtos_set_register(M0PLUS_SHPR3_OFFSET, M0PLUS_SHPR3_PRI_15_BITS,

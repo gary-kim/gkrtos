@@ -16,6 +16,7 @@
 #ifndef GKRTOS_STRUCTURES_LIST_H
 #define GKRTOS_STRUCTURES_LIST_H
 
+#include <stdbool.h>
 #include <stdint-gcc.h>
 struct gkrtos_list_item {
   struct gkrtos_list_item *next;
@@ -49,6 +50,8 @@ struct gkrtos_list_item *gkrtos_list_get_tail_item(struct gkrtos_list *list);
 
 struct gkrtos_list_item *gkrtos_list_get_head_item(struct gkrtos_list *list);
 
+void *gkrtos_list_get_following_head_item(struct gkrtos_list *list);
+
 struct gkrtos_list_item *gkrtos_list_get_item_with_data(
     struct gkrtos_list *list, void *data);
 
@@ -60,7 +63,7 @@ void *gkrtos_list_get_head(struct gkrtos_list *list);
 // int sort_fn(void* raw_item, void* previous, void* next);
 struct gkrtos_list *gkrtos_list_insert_sorted(struct gkrtos_list *list,
                                               void *raw_item,
-                                              int (*sort_fn)(void *, void *,
-                                                             void *));
+                                              bool (*sort_fn)(void *, void *,
+                                                              void *));
 
 #endif

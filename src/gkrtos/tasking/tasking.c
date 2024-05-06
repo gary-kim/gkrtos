@@ -26,7 +26,8 @@
 
 struct gkrtos_tasking_task gkrtos_task_list[GKRTOS_CONFIG_MAX_TASKS];
 struct gkrtos_tasking_core gkrtos_tasking_cores[GKRTOS_ARCH_NUM_CORES];
-struct gkrtos_list* gkrtos_tasking_queue;
+struct gkrtos_list* gkrtos_tasking_scheduled_queue;
+struct gkrtos_list* gkrtos_tasking_unscheduled_queue;
 
 // Requires OS Spinlock
 struct gkrtos_tasking_task* gkrtos_tasking_task_new(
@@ -83,6 +84,99 @@ gkrtos_stackptr_t gkrtos_internal_context_switch(
   return next_task->stackptr;
 }
 
+// IMPORTANT: Assumes called in critical region
+bool queue_sort(void* arg1, void* arg2, void* arg3) {
+  // Assumes that a list is either all scheduled tasks or unscheduled tasks.
+  // Cannot handle mixed lists.
+  struct gkrtos_tasking_task* inserting = (struct gkrtos_tasking_task*)arg1;
+  struct gkrtos_tasking_task* previous = (struct gkrtos_tasking_task*)arg2;
+  struct gkrtos_tasking_task* next = (struct gkrtos_tasking_task*)arg3;
+
+  if (!gkrtos_internal_tasking_is_scheduled_task(inserting)) {
+    return true;
+  }
+
+  return absolute_time_diff_us(inserting->next_run_time, next->next_run_time) >
+             0 &&
+         absolute_time_diff_us(previous->next_run_time, next->next_run_time) >=
+             0;
+}
+
+// IMPORTANT: Assumes called in a critical region
+static inline bool gkrtos_internal_tasking_rescheduling_required_locked() {
+  struct gkrtos_tasking_task* current_task = gkrtos_tasking_get_current_task();
+  uint64_t elapsed_task_time = absolute_time_diff_us(
+      current_task->accounting.ctx_switch_time, get_absolute_time());
+  if (elapsed_task_time > GKRTOS_TASKING_TASK_ELAPSED_TIME_US) {
+    // This task has run for long enough
+    return true;
+  }
+  absolute_time_t next_systick =
+      make_timeout_time_us(to_us_since_boot(gkrtos_get_systick_period()));
+  // Is the next scheduled task expecting to be rescheduled within the next
+  // systick period?
+  if (absolute_time_diff_us(((struct gkrtos_tasking_task*)gkrtos_list_get_head(
+                                 gkrtos_tasking_scheduled_queue))
+                                ->next_run_time,
+                            next_systick) <= 0) {
+    // A scheduled task expects to be on the core soon.
+    return true;
+  }
+  return false;
+}
+
+// IMPORTANT: Assumes called in critical region
+static inline struct gkrtos_tasking_task*
+gkrtos_internal_tasking_get_next_task_locked() {
+  // Is the next scheduled task expecting to be rescheduled within the next
+  // systick period?
+  absolute_time_t next_systick =
+      make_timeout_time_us(to_us_since_boot(gkrtos_get_systick_period()));
+  if (absolute_time_diff_us(((struct gkrtos_tasking_task*)gkrtos_list_get_head(
+                                 gkrtos_tasking_scheduled_queue))
+                                ->next_run_time,
+                            next_systick) <= 0) {
+    // We have at least another systick until a scheduled task must be run
+    gkrtos_list_rotate(gkrtos_tasking_unscheduled_queue);
+    return gkrtos_list_get_head(gkrtos_tasking_unscheduled_queue);
+  }
+
+  // We have to schedule the task on gkrtos_tasking_scheduled_queue now!
+  struct gkrtos_tasking_task* new_task =
+      gkrtos_list_get_head(gkrtos_tasking_scheduled_queue);
+
+  // Remove from scheduled_queue list then add to unscheduled_queue at the end
+  gkrtos_list_remove(
+      gkrtos_tasking_scheduled_queue,
+      gkrtos_list_get_item_with_data(gkrtos_tasking_scheduled_queue, new_task));
+  new_task->next_run_time = nil_time;
+  gkrtos_list_append(gkrtos_tasking_unscheduled_queue, new_task);
+  return new_task;
+}
+
+// IMPORTANT: Assumes called in critical region
+static inline void gkrtos_internal_tasking_queue_task_locked(
+    struct gkrtos_tasking_task* task) {
+  if (gkrtos_internal_tasking_is_scheduled_task(task)) {
+    gkrtos_list_insert_sorted(gkrtos_tasking_scheduled_queue, task, queue_sort);
+  } else {
+    gkrtos_list_prepend(gkrtos_tasking_unscheduled_queue, task);
+  }
+}
+
+static inline void gkrtos_internal_tasking_dequeue_task_locked(
+    struct gkrtos_tasking_task* task) {
+  if (gkrtos_internal_tasking_is_scheduled_task(task)) {
+    gkrtos_list_remove(
+        gkrtos_tasking_scheduled_queue,
+        gkrtos_list_get_item_with_data(gkrtos_tasking_scheduled_queue, task));
+  } else {
+    gkrtos_list_remove(
+        gkrtos_tasking_unscheduled_queue,
+        gkrtos_list_get_item_with_data(gkrtos_tasking_unscheduled_queue, task));
+  }
+}
+
 // Requires OS Spinlock
 // Returns: Next task to schedule
 struct gkrtos_tasking_task* gkrtos_internal_tasking_sleep_until(
@@ -90,10 +184,15 @@ struct gkrtos_tasking_task* gkrtos_internal_tasking_sleep_until(
   gkrtos_critical_section_data_structures_enter_blocking();
   // BEGIN CRITICAL REGION
 
+  // Remove the task from the unscheduled queue then add it to the scheduled
+  // queue
+  gkrtos_internal_tasking_dequeue_task_locked(task);
   task->next_run_time = milliseconds;
-  gkrtos_list_rotate(gkrtos_tasking_queue);
+  gkrtos_internal_tasking_queue_task_locked(task);
+
+  // Find next task to run
   struct gkrtos_tasking_task* new_task =
-      gkrtos_list_get_head(gkrtos_tasking_queue);
+      gkrtos_internal_tasking_get_next_task_locked();
 
   // END CRITICAL REGION
   gkrtos_critical_section_data_structures_exit();
@@ -105,9 +204,9 @@ struct gkrtos_tasking_task* gkrtos_internal_tasking_get_next_task() {
   gkrtos_critical_section_data_structures_enter_blocking();
   // BEGIN CRITICAL SECTION
 
-  gkrtos_list_rotate(gkrtos_tasking_queue);
+  // Find next task to run
   struct gkrtos_tasking_task* new_task =
-      gkrtos_list_get_head(gkrtos_tasking_queue);
+      gkrtos_internal_tasking_get_next_task_locked();
 
   // END CRITICAL SECTION
   gkrtos_critical_section_data_structures_exit();
@@ -129,9 +228,9 @@ struct gkrtos_tasking_task* gkrtos_internal_queue_context_switch(
   return task;
 }
 
-// Requires OS Spinlock
 enum gkrtos_result gkrtos_internal_tasking_init() {
-  gkrtos_tasking_queue = gkrtos_list_new();
+  gkrtos_tasking_scheduled_queue = gkrtos_list_new();
+  gkrtos_tasking_unscheduled_queue = gkrtos_list_new();
   return GKRTOS_RESULT_SUCCESS;
 }
 
@@ -143,7 +242,7 @@ enum gkrtos_result gkrtos_tasking_queue_task(struct gkrtos_tasking_task* task) {
   gkrtos_critical_section_data_structures_enter_blocking();
   // BEGIN CRITICAL REGION
 
-  gkrtos_list_prepend(gkrtos_tasking_queue, task);
+  gkrtos_internal_tasking_queue_task_locked(task);
 
   // END CRITICAL REGION
   gkrtos_critical_section_data_structures_exit();
@@ -155,10 +254,19 @@ enum gkrtos_result gkrtos_tasking_dequeue_task(
   gkrtos_critical_section_data_structures_enter_blocking();
   // BEGIN CRITICAL SECTION
 
-  gkrtos_list_remove(gkrtos_tasking_queue, gkrtos_list_get_item_with_data(
-                                               gkrtos_tasking_queue, task));
+  gkrtos_internal_tasking_dequeue_task_locked(task);
 
   // END CRITICAL SECTION
   gkrtos_critical_section_data_structures_exit();
   return GKRTOS_RESULT_SUCCESS;
+}
+bool gkrtos_tasking_reschedule_required() {
+  gkrtos_critical_section_data_structures_enter_blocking();
+  // BEGIN CRITICAL SECTION
+
+  bool required = gkrtos_internal_tasking_rescheduling_required_locked();
+
+  // END CRITICAL SECTION
+  gkrtos_critical_section_data_structures_exit();
+  return required;
 }

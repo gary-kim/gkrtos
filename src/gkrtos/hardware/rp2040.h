@@ -13,7 +13,13 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#ifndef GKRTOS_HARDWARE_RP2040_H
+#define GKRTOS_HARDWARE_RP2040_H
+
 #include <stdint-gcc.h>
+
+#include "gkrtos/config.h"
+#include "pico/types.h"
 
 typedef void* gkrtos_stackptr_t;
 
@@ -26,3 +32,9 @@ uint32_t gkrtos_get_cpuid();
 uint32_t gkrtos_get_cpu_frequency();
 
 uint32_t gkrtos_get_systick_rvr_value();
+
+static inline absolute_time_t gkrtos_get_systick_period() {
+  return from_us_since_boot(1000000 / GKRTOS_SYSTICK_FREQUENCY_HZ);
+}
+
+#endif
