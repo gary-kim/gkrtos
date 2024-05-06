@@ -26,7 +26,7 @@
 #include "hardware/exception.h"
 #include "pico/stdlib.h"
 
-GKRTOS_STACK_SETUP(spin_task_stack, 4);
+GKRTOS_STACK_SETUP(spin_task_stack, 1);
 
 enum gkrtos_result gkrtos_init() {
   if (!(gkrtos_critical_section_init() == GKRTOS_RESULT_SUCCESS &&

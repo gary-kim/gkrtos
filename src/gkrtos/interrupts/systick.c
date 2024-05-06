@@ -33,6 +33,7 @@ gkrtos_stackptr_t gkrtos_systick_handler(gkrtos_stackptr_t stackptr) {
 }
 
 enum gkrtos_result gkrtos_init_systick_handler() {
+  return 0;
   // Just using isr_systick
   //  exception_set_exclusive_handler(SYSTICK_EXCEPTION, gkrtos_isr_systick);
   // Documented here:

@@ -66,10 +66,14 @@ struct gkrtos_list* gkrtos_list_insert_sorted(struct gkrtos_list* list,
   // Append item to list behind previous
   struct gkrtos_list_item* new_item = gkrtos_list_item_new();
   new_item->data = raw_item;
-  new_item->next = previous->next;
-  new_item->prev = previous;
+
+  struct gkrtos_list_item* next_item = previous->next;
+
   previous->next = new_item;
-  new_item->next->prev = new_item;
+  new_item->prev = previous;
+  new_item->next = next_item;
+  next_item->prev = new_item;
+
   list->length++;
   return list;
 }
@@ -106,6 +110,7 @@ struct gkrtos_list* gkrtos_list_remove(struct gkrtos_list* list,
   if (list->head == item) {
     list->head = item->next;
     list->head->prev = item->prev;
+    item->prev->next = item->next;
 
     if (list->head->next == item) {
       list->head->next = list->head;
@@ -131,7 +136,7 @@ SUCCESS:
 }
 
 struct gkrtos_list* gkrtos_list_new() {
-  struct gkrtos_list* list = malloc(sizeof(struct gkrtos_list_item));
+  struct gkrtos_list* list = malloc(sizeof(struct gkrtos_list));
   list->head = NULL;
   list->length = 0;
   return list;
