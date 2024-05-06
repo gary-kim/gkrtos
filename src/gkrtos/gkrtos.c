@@ -21,7 +21,10 @@
 #include "gkrtos/interrupts/pendsv.h"
 #include "gkrtos/interrupts/svcall.h"
 #include "gkrtos/interrupts/systick.h"
+#include "gkrtos/tasking/runner.h"
 #include "pico/stdlib.h"
+
+GKRTOS_STACK_SETUP(spin_task_stack, 1);
 
 enum gkrtos_result gkrtos_init() {
   if (gkrtos_critical_section_init() == GKRTOS_RESULT_SUCCESS &&
@@ -29,6 +32,13 @@ enum gkrtos_result gkrtos_init() {
       gkrtos_init_svcall_handler() == GKRTOS_RESULT_SUCCESS &&
       gkrtos_internal_tasking_init() == GKRTOS_RESULT_SUCCESS)
     return GKRTOS_RESULT_SUCCESS;
+  struct gkrtos_syscall_create_task_args spin_task_args = {
+      .priority = GKRTOS_TASKING_PRIORITY_USER,
+      .function = gkrtos_internal_spin_task,
+      .stack_base = spin_task_stack,
+  };
+
+  gkrtos_syscall_create_task(&spin_task_args);
   return GKRTOS_RESULT_ERROR;
 }
 

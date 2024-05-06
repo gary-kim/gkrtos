@@ -92,7 +92,7 @@ gkrtos_syscall_return_t gkrtos_internal_syscall_create_task(
       gkrtos_tasking_task_new(gkrtos_tasking_priority_user(args->priority));
   new_task->function = args->function;
   new_task->stackptr =
-      gkrtos_internal_stack_init(args->stack_base, new_task->function);
+      gkrtos_internal_stack_init(args->stack_base, gkrtos_internal_task_runner);
   new_task->stackbase = args->stack_base;
   gkrtos_tasking_queue_task(new_task);
   return new_task->pid;

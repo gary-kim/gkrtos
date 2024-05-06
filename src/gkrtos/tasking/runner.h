@@ -17,5 +17,6 @@
 #define GKRTOS_TASKING_RUNNER_H
 
 void gkrtos_internal_task_runner();
+void gkrtos_internal_spin_task();
 
 #endif

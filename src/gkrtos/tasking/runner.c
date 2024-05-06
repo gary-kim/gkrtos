@@ -27,3 +27,11 @@ void gkrtos_internal_task_runner() {
   task->function();
   gkrtos_syscall_suicide();
 }
+
+// gkrtos_internal_spin_task is just an empty task that will immediately yield.
+// Used as a sleep task, essentially (a very inefficient one but still).
+void gkrtos_internal_spin_task() {
+  while (true) {
+    gkrtos_syscall_yield();
+  }
+}
