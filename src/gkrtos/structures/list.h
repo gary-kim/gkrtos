@@ -56,6 +56,8 @@ void *gkrtos_list_rotate(struct gkrtos_list *list);
 
 void *gkrtos_list_get_head(struct gkrtos_list *list);
 
+// Expects a sort_fn with the following signature:
+// int sort_fn(void* raw_item, void* previous, void* next);
 struct gkrtos_list *gkrtos_list_insert_sorted(struct gkrtos_list *list,
                                               void *raw_item,
                                               int (*sort_fn)(void *, void *,
