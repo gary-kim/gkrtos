@@ -32,7 +32,7 @@ struct gkrtos_list* gkrtos_tasking_unscheduled_queue;
 // Requires OS Spinlock
 struct gkrtos_tasking_task* gkrtos_tasking_task_new(
     enum gkrtos_tasking_priority priority) {
-  static gkrtos_pid_t current_max_pid = 0;
+  static gkrtos_pid_t current_max_pid = 1;
 
   gkrtos_critical_section_data_structures_enter_blocking();
   // BEGIN CRITICAL REGION
@@ -73,10 +73,12 @@ gkrtos_stackptr_t gkrtos_internal_context_switch(
   // Do task accounting
   if (current_task->task_status == GKRTOS_TASKING_STATUS_RUNNING) {
     current_task->accounting.run_ticks +=
-        (current_time - current_task->accounting.ctx_switch_time) / 1000llu;
+        (current_time -
+         to_us_since_boot(current_task->accounting.ctx_switch_time)) /
+        1000llu;
     current_task->task_status = GKRTOS_TASKING_STATUS_SLEEPING;
   }
-  next_task->accounting.ctx_switch_time = current_time;
+  next_task->accounting.ctx_switch_time = get_absolute_time();
   next_task->task_status = GKRTOS_TASKING_STATUS_RUNNING;
 
   current_core->currently_running_pid = next_task->pid;
@@ -231,6 +233,10 @@ struct gkrtos_tasking_task* gkrtos_internal_queue_context_switch(
 enum gkrtos_result gkrtos_internal_tasking_init() {
   gkrtos_tasking_scheduled_queue = gkrtos_list_new();
   gkrtos_tasking_unscheduled_queue = gkrtos_list_new();
+  for (int i = 0; i < GKRTOS_ARCH_NUM_CORES; i++) {
+    gkrtos_tasking_cores[i].currently_running_pid = 0;
+    gkrtos_tasking_cores[i].queued_task = 0;
+  }
   return GKRTOS_RESULT_SUCCESS;
 }
 

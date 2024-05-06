@@ -22,6 +22,7 @@
 #include "gkrtos/interrupts/svcall.h"
 #include "gkrtos/interrupts/systick.h"
 #include "gkrtos/tasking/runner.h"
+#include "hardware/exception.h"
 #include "pico/stdlib.h"
 
 GKRTOS_STACK_SETUP(spin_task_stack, 1);
@@ -44,7 +45,10 @@ enum gkrtos_result gkrtos_init() {
 
 enum gkrtos_result gkrtos_start() {
   if (gkrtos_init_systick_handler() == GKRTOS_RESULT_SUCCESS) {
-    // TODO: Context switch into the RTOS
+    // Force the first task to run
+    gkrtos_tasking_cores[0].queued_task = 1;
+    // The next line should never return at this point
+    irq_set_pending(PENDSV_EXCEPTION);
   }
   return GKRTOS_RESULT_ERROR;
 }
