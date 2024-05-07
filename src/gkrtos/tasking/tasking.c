@@ -163,6 +163,16 @@ gkrtos_internal_tasking_get_next_task_locked() {
 static inline void gkrtos_internal_tasking_queue_task_locked(
     struct gkrtos_tasking_task* task) {
   if (gkrtos_internal_tasking_is_scheduled_task(task)) {
+    // Does it need to be at the head? The `gkrtos_list_insert_sorted`
+    // function refuses to ever replace the head with the inserted item.
+    if (!gkrtos_list_is_empty(gkrtos_tasking_scheduled_queue) &&
+        absolute_time_diff_us(
+            ((struct gkrtos_tasking_task*)gkrtos_list_get_head(
+                 gkrtos_tasking_scheduled_queue))
+                ->next_run_time,
+            task->next_run_time) < 0) {
+      gkrtos_list_prepend(gkrtos_tasking_scheduled_queue, task);
+    }
     gkrtos_list_insert_sorted(gkrtos_tasking_scheduled_queue, task, queue_sort);
   } else {
     gkrtos_list_prepend(gkrtos_tasking_unscheduled_queue, task);
