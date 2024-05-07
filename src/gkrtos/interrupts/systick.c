@@ -33,7 +33,9 @@ gkrtos_stackptr_t gkrtos_systick_handler(gkrtos_stackptr_t stackptr) {
 }
 
 enum gkrtos_result gkrtos_init_systick_handler() {
+#ifndef GKRTOS_SYSTICK_ENABLED
   return 0;
+#else
   // Just using isr_systick
   //  exception_set_exclusive_handler(SYSTICK_EXCEPTION, gkrtos_isr_systick);
   // Documented here:
@@ -53,4 +55,5 @@ enum gkrtos_result gkrtos_init_systick_handler() {
                       M0PLUS_SHPR3_PRI_15_LSB, GKRTOS_SYSTICK_PRIORITY);
 
   return GKRTOS_RESULT_SUCCESS;
+#endif
 }
