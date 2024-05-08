@@ -22,13 +22,9 @@
 
 GKRTOS_STACK_SETUP(blink2_stack, 2);
 void blink2() {
-  while (true) {
-    gpio_put(LED2_PIN, 0);
-    gkrtos_syscall_sleep_until(make_timeout_time_ms(1000));
-
-    gpio_put(LED2_PIN, 1);
-    gkrtos_syscall_sleep_until(make_timeout_time_ms(1000));
-  }
+  static bool led2_state = false;
+  led2_state = !led2_state;
+  gpio_put(LED2_PIN, led2_state);
 }
 
 GKRTOS_STACK_SETUP(blink_stack, 2);
@@ -54,7 +50,8 @@ int main() {
   struct gkrtos_syscall_create_task_args task2_args = {
       .priority = GKRTOS_TASKING_PRIORITY_USER,
       .function = blink2,
-      .stack_base = blink2_stack};
+      .stack_base = blink2_stack,
+      .run_frequency = 1};
   gkrtos_syscall_create_task(&task2_args);
 
   stdio_init_all();

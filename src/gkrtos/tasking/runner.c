@@ -28,8 +28,9 @@ void gkrtos_internal_task_runner() {
     task->function(task->pid);
     gkrtos_syscall_die();
   } else {
+    absolute_time_t next_run = get_absolute_time();
     while (true) {
-      absolute_time_t next_run = make_timeout_time_us(1000000 / task->run_frequency);
+      next_run = delayed_by_us(next_run, 1000000 / task->run_frequency);
       task->function(task->pid);
       if (absolute_time_diff_us(get_absolute_time(), next_run) >= 0) {
         gkrtos_syscall_sleep_until(next_run);
