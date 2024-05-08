@@ -20,12 +20,12 @@
 
 // task_runner actually runs the function of each task. This allows the RTOS to
 // more easily handle things like fixed frequency tasking and not causing issues
-// by returning (just call suicide on behalf of the task).
+// by returning (just call die on behalf of the task).
 // This task runs in userspace
 void gkrtos_internal_task_runner() {
   struct gkrtos_tasking_task *task = gkrtos_tasking_get_current_task();
-  task->function();
-  gkrtos_syscall_suicide();
+  task->function(task->pid);
+  gkrtos_syscall_die();
 }
 
 // gkrtos_internal_spin_task is just an empty task that will immediately yield.

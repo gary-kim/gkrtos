@@ -31,8 +31,8 @@ gkrtos_syscall_return_t gkrtos_syscall(enum gkrtos_syscall syscall,
   return gkrtos_trigger_svcall(syscall, args);
 }
 
-gkrtos_syscall_return_t gkrtos_syscall_suicide() {
-  return gkrtos_syscall(GKRTOS_SYSCALL_SUICIDE, NULL);
+gkrtos_syscall_return_t gkrtos_syscall_die() {
+  return gkrtos_syscall(GKRTOS_SYSCALL_DIE, NULL);
 }
 
 gkrtos_syscall_return_t gkrtos_syscall_kill(gkrtos_pid_t pid) {

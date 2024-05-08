@@ -35,7 +35,7 @@ enum gkrtos_syscall {
   GKRTOS_SYSCALL_KILL = 0,
   GKRTOS_SYSCALL_YIELD = 1,
   GKRTOS_SYSCALL_SLEEP_UNTIL = 2,
-  GKRTOS_SYSCALL_SUICIDE = 3,
+  GKRTOS_SYSCALL_DIE = 3,
   GKRTOS_SYSCALL_CREATE_TASK = 4,
 };
 
@@ -56,7 +56,7 @@ struct gkrtos_syscall_create_task_args {
 };
 
 gkrtos_syscall_return_t gkrtos_syscall(enum gkrtos_syscall syscall, void* args);
-gkrtos_syscall_return_t gkrtos_syscall_suicide();
+gkrtos_syscall_return_t gkrtos_syscall_die();
 gkrtos_syscall_return_t gkrtos_syscall_kill(gkrtos_pid_t pid);
 gkrtos_syscall_return_t gkrtos_syscall_yield();
 gkrtos_syscall_return_t gkrtos_syscall_sleep_until(

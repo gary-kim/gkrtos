@@ -38,7 +38,7 @@ enum gkrtos_tasking_status {
 };
 
 typedef uint32_t gkrtos_pid_t;
-typedef void (*gkrtos_tasking_function_t)();
+typedef void (*gkrtos_tasking_function_t)(gkrtos_pid_t pid);
 
 struct gkrtos_tasking_task {
   gkrtos_pid_t pid;

@@ -28,8 +28,8 @@ gkrtos_syscall_return_t gkrtos_internal_syscall(
   // TODO: Switch to function pointer array for faster operation
   // or verify that it compiles to the same thing
   switch (syscall) {
-    case GKRTOS_SYSCALL_SUICIDE:
-      return gkrtos_internal_syscall_suicide(task);
+    case GKRTOS_SYSCALL_DIE:
+      return gkrtos_internal_syscall_die(task);
       break;
     case GKRTOS_SYSCALL_YIELD:
       return gkrtos_internal_syscall_yield(task);
@@ -47,7 +47,7 @@ gkrtos_syscall_return_t gkrtos_internal_syscall(
   return -GKRTOS_SYSCALL_ERRNO_NO_SUCH_SYSCALL;
 }
 
-gkrtos_syscall_return_t gkrtos_internal_syscall_suicide(
+gkrtos_syscall_return_t gkrtos_internal_syscall_die(
     struct gkrtos_tasking_task* task) {
   gkrtos_internal_syscall_kill(task, &task->pid);
   return GKRTOS_SYSCALL_ERRNO_SUCCESS;

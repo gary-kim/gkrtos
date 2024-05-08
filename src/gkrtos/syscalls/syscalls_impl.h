@@ -27,7 +27,7 @@
 
 gkrtos_syscall_return_t gkrtos_internal_syscall(
     struct gkrtos_tasking_task* task, enum gkrtos_syscall syscall, void* args);
-gkrtos_syscall_return_t gkrtos_internal_syscall_suicide(
+gkrtos_syscall_return_t gkrtos_internal_syscall_die(
     struct gkrtos_tasking_task* task);
 gkrtos_syscall_return_t gkrtos_internal_syscall_kill(
     const struct gkrtos_tasking_task* task, const gkrtos_pid_t* pid);
