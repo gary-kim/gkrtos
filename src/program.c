@@ -35,10 +35,10 @@ GKRTOS_STACK_SETUP(blink_stack, 2);
 void blink() {
   while (true) {
     gpio_put(PICO_DEFAULT_LED_PIN, 1);
-    gkrtos_syscall_sleep_until(make_timeout_time_ms(1000));
+    gkrtos_syscall_sleep_until(make_timeout_time_ms(500));
 
     gpio_put(PICO_DEFAULT_LED_PIN, 0);
-    gkrtos_syscall_sleep_until(make_timeout_time_ms(1000));
+    gkrtos_syscall_sleep_until(make_timeout_time_ms(500));
   }
 }
 

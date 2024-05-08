@@ -171,7 +171,8 @@ static inline void gkrtos_internal_tasking_queue_task_locked(
                  gkrtos_tasking_scheduled_queue))
                 ->next_run_time,
             task->next_run_time) < 0) {
-      gkrtos_list_prepend(gkrtos_tasking_scheduled_queue, task);
+      gkrtos_list_insert_head(gkrtos_tasking_scheduled_queue, task);
+      return;
     }
     gkrtos_list_insert_sorted(gkrtos_tasking_scheduled_queue, task, queue_sort);
   } else {

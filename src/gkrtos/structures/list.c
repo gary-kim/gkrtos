@@ -101,6 +101,30 @@ struct gkrtos_list* gkrtos_list_prepend(struct gkrtos_list* list,
   return list;
 }
 
+struct gkrtos_list* gkrtos_list_insert_head(struct gkrtos_list* list,
+                                            void* raw_item) {
+  struct gkrtos_list_item* item = gkrtos_list_item_new();
+  item->data = raw_item;
+
+  if (list->length == 0) {
+    // First item in the list
+    list->head = item;
+    item->next = item;
+    item->prev = item;
+    list->length = 1;
+    return list;
+  }
+  // Prepend the new item to the list at the head
+  item->next = list->head;
+  item->prev = list->head->prev;
+  list->head->prev->next = item;
+  list->head->prev = item;
+  list->head = item;
+  list->length++;
+
+  return list;
+}
+
 struct gkrtos_list* gkrtos_list_remove(struct gkrtos_list* list,
                                        struct gkrtos_list_item* item) {
   if (list->length == 0) {

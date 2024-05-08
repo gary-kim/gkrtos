@@ -24,8 +24,18 @@
 // This task runs in userspace
 void gkrtos_internal_task_runner() {
   struct gkrtos_tasking_task *task = gkrtos_tasking_get_current_task();
-  task->function(task->pid);
-  gkrtos_syscall_die();
+  if (task->run_frequency == 0) {
+    task->function(task->pid);
+    gkrtos_syscall_die();
+  } else {
+    while (true) {
+      absolute_time_t next_run = make_timeout_time_us(1000000 / task->run_frequency);
+      task->function(task->pid);
+      if (absolute_time_diff_us(get_absolute_time(), next_run) >= 0) {
+        gkrtos_syscall_sleep_until(next_run);
+      }
+    }
+  }
 }
 
 // gkrtos_internal_spin_task is just an empty task that will immediately yield.
