@@ -76,7 +76,6 @@ gkrtos_trigger_svcall:
     svc #0
     pop {r0}
     mov lr, r0
-    cpsie i
     bx lr
 
     .thumb_func

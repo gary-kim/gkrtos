@@ -25,7 +25,7 @@
 #include "rp2040/rp2040_defs.h"
 
 gkrtos_stackptr_t gkrtos_pendsv_handler_c(gkrtos_stackptr_t stackptr) {
-  gkrtos_critical_section_data_structures_enter_blocking();
+  int interrupts = save_and_disable_interrupts();
   // BEGIN CRITICAL REGION
 
   uint32_t core_id = gkrtos_get_cpuid();
@@ -44,7 +44,7 @@ gkrtos_stackptr_t gkrtos_pendsv_handler_c(gkrtos_stackptr_t stackptr) {
       current_core, current_task, next_task, stackptr);
 
   // END CRITICAL REGION
-  gkrtos_critical_section_data_structures_exit();
+  restore_interrupts(interrupts);
   return new_sp;
 }
 

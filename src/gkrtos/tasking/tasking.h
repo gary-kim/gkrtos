@@ -74,9 +74,7 @@ struct gkrtos_tasking_task {
   // from this task occurs.
   gkrtos_stackptr_t stackptr;
 
-  // stackbase keeps track of the base of the stack for this process. Mainly
-  // used for freeing the stack space later.
-  // TODO: Actually use this. Currently unused for simplicity
+  // stackbase keeps track of the base of the stack for this process.
   gkrtos_stackptr_t stackbase;
 
   // next_run_time contains the time at which this task must be queued next.
