@@ -46,11 +46,7 @@
     .type isr_systick, %function
     .global isr_systick
 isr_systick:
-    push {lr}
-    CONTEXT_SAVE r0
-    bl gkrtos_systick_handler
-    CONTEXT_RESTORE r0
-    pop {pc}
+    b gkrtos_systick_handler
 
     .thumb_func
     .type isr_svcall, %function
