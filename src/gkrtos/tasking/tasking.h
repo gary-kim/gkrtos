@@ -151,6 +151,9 @@ enum gkrtos_result gkrtos_tasking_dequeue_task(
     struct gkrtos_tasking_task* task);
 
 // Requires OS Lock
+enum gkrtos_result gkrtos_tasking_schedule_next_tick_task(gkrtos_pid_t pid);
+
+// Requires OS Lock
 // Returns: whether a reschedule must occur
 bool gkrtos_tasking_reschedule_required();
 

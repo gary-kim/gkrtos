@@ -48,6 +48,10 @@ gkrtos_syscall_return_t gkrtos_syscall_sleep_until(
   return gkrtos_syscall(GKRTOS_SYSCALL_SLEEP_UNTIL, &milliseconds);
 }
 
+gkrtos_syscall_return_t gkrtos_syscall_task_next_tick(gkrtos_pid_t pid) {
+  return gkrtos_syscall(GKRTOS_SYSCALL_TASK_NEXT_TICK, &pid);
+}
+
 gkrtos_pid_t gkrtos_syscall_create_task(
     struct gkrtos_syscall_create_task_args* args) {
   return (gkrtos_pid_t)gkrtos_syscall(GKRTOS_SYSCALL_CREATE_TASK, args);

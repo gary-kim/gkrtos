@@ -37,6 +37,7 @@ enum gkrtos_syscall {
   GKRTOS_SYSCALL_SLEEP_UNTIL = 2,
   GKRTOS_SYSCALL_DIE = 3,
   GKRTOS_SYSCALL_CREATE_TASK = 4,
+  GKRTOS_SYSCALL_TASK_NEXT_TICK = 5,
 };
 
 enum gkrtos_syscall_errno {
@@ -63,5 +64,6 @@ gkrtos_syscall_return_t gkrtos_syscall_sleep_until(
     absolute_time_t milliseconds);
 gkrtos_pid_t gkrtos_syscall_create_task(
     struct gkrtos_syscall_create_task_args* args);
+gkrtos_pid_t gkrtos_syscall_task_next_tick(gkrtos_pid_t pid);
 
 #endif

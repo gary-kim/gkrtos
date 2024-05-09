@@ -38,6 +38,8 @@ gkrtos_syscall_return_t gkrtos_internal_syscall_sleep_until(
 gkrtos_syscall_return_t gkrtos_internal_syscall_create_task(
     struct gkrtos_tasking_task* calling_task,
     struct gkrtos_syscall_create_task_args* args);
+gkrtos_syscall_return_t gkrtos_internal_syscall_task_next_tick(
+    struct gkrtos_tasking_task* task, const gkrtos_pid_t* pid);
 struct gkrtos_list* gkrtos_list_insert_head(struct gkrtos_list* list,
                                             void* raw_item);
 

@@ -43,6 +43,8 @@ gkrtos_syscall_return_t gkrtos_internal_syscall(
     case GKRTOS_SYSCALL_CREATE_TASK:
       return gkrtos_internal_syscall_create_task(
           task, (struct gkrtos_syscall_create_task_args*)args);
+    case GKRTOS_SYSCALL_TASK_NEXT_TICK:
+      return gkrtos_internal_syscall_task_next_tick(task, (gkrtos_pid_t*)args);
   }
   return -GKRTOS_SYSCALL_ERRNO_NO_SUCH_SYSCALL;
 }
@@ -99,4 +101,9 @@ gkrtos_syscall_return_t gkrtos_internal_syscall_create_task(
   new_task->run_frequency = args->run_frequency;
   gkrtos_tasking_queue_task(new_task);
   return new_task->pid;
+}
+gkrtos_syscall_return_t gkrtos_internal_syscall_task_next_tick(
+    struct gkrtos_tasking_task* task, const gkrtos_pid_t* pid) {
+  gkrtos_tasking_schedule_next_tick_task(*pid);
+  return GKRTOS_SYSCALL_ERRNO_SUCCESS;
 }

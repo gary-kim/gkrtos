@@ -282,6 +282,21 @@ enum gkrtos_result gkrtos_tasking_dequeue_task(
   gkrtos_critical_section_data_structures_exit();
   return GKRTOS_RESULT_SUCCESS;
 }
+
+enum gkrtos_result gkrtos_tasking_schedule_next_tick_task(gkrtos_pid_t pid) {
+  gkrtos_critical_section_data_structures_enter_blocking();
+  // BEGIN CRITICAL SECTION
+
+  struct gkrtos_tasking_task* task_to_queue = &gkrtos_task_list[pid];
+  gkrtos_tasking_dequeue_task(task_to_queue);
+  task_to_queue->next_run_time = get_absolute_time();
+  gkrtos_tasking_queue_task(task_to_queue);
+
+  // END CRITICAL SECTION
+  gkrtos_critical_section_data_structures_exit();
+  return GKRTOS_RESULT_SUCCESS;
+}
+
 bool gkrtos_tasking_reschedule_required() {
   gkrtos_critical_section_data_structures_enter_blocking();
   // BEGIN CRITICAL SECTION
